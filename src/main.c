@@ -6,45 +6,148 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/20 13:24:32 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/28 13:46:41 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <libft.h>
-#include <ft_printf.h>
-#include <get_next_line.h>
-
-# define SEP_SET ";|<>\0"
-# define STOPDOL " \"'+;,<>/\\.%&|:$\0"
-
-typedef struct	s_sig
-{
-	int		signum;
-	int		st;
-}				t_sig;
-
-typedef struct	s_cmds
-{
-	char	*cmd;
-	char	**args;
-	int		sep;
-	char	*rst;
-}				t_cmds;
+#include <minishell.h>
 
 int		ft_isspace(char c)
 {
-	if (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == ' ')
+	if (c == '\t' || c == '\n' || c == '\v'
+		|| c == '\f' || c == '\r' || c == ' ')
 		return (1);
 	return (0);
+}
+
+size_t	ft_charat(const char *str, int c)
+{
+	size_t i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (i);
+		i++;
+	}
+	return (-1);
 }
 
 void	signal_callback_handler(int signum)
 {
 	ft_printf("\n> ");
+}
+
+void	sign3(int signum)
+{
+	return ;
+}
+
+int		free_tab(char **args)
+{
+	int i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args[i]);
+	free(args);
+	return (1);
+}
+
+void	free_cmd(t_cmds cmds)
+{
+	free(cmds.cmd);
+	free_tab(cmds.args);
+}
+
+char	*ft_strjoinfree2(const char *s1, const char *s2)
+{
+	size_t	len;
+	size_t	i;
+	size_t	j;
+	char	*re;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (!(re = malloc(len + 1)))
+		return (0);
+	while (s1 && s1[i])
+	{
+		re[i] = s1[i];
+		i++;
+	}
+	while (s2 && s2[j])
+	{
+		re[i + j] = s2[j];
+		j++;
+	}
+	re[i + j] = '\0';
+	free((void*)s2);
+	return (re);
+}
+
+char	**push_front_tab(char *cp, char **args)
+{
+	char	**re;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (args[i])
+		i++;
+	if (!(re = malloc(sizeof(char*) * (i + 2))))
+		return (0);
+	re[0] = strdup(cp);
+	while (j < i)
+	{
+		re[j + 1] = strdup(args[j]);
+		j++;
+	}
+	re[j + 1] = 0;
+	return (re);
+}
+
+char	**ft_join_tabs(char **t1, char **t2)
+{
+	char	**re;
+	size_t	i;
+	size_t	j;
+	size_t len;
+
+	i = 0;
+	while (t1[i])
+		i++;
+	j = 0;
+	while (t2[j])
+		j++;
+	if (!(re = malloc(sizeof(char*) * (i + j + 1))))
+		return (0);
+	len = 0;
+	i = 0;
+	j = 0;
+	while (t1[i])
+		re[len++] = ft_strdup(t1[i++]);
+	while (t2[j])
+		re[len++] = ft_strdup(t2[j++]);
+	re[len] = 0;
+	return (re);
+
+}
+
+char	**ft_join_tabs_free1(char **t1, char **t2)
+{
+	char	**re;
+
+	re = ft_join_tabs(t1, t2);
+	free_tab(t1);
+	return (re);
 }
 
 char	*read_line(void)
@@ -61,48 +164,46 @@ char	*read_line(void)
 		if (c == 1)
 			return (buf);
 		else if (c == 0 && *buf == 0)
-			exit(1);
+		{
+			ft_printf("exit\n");
+			exit(0);
+		}
 	}
 	return (0);
 }
-/*
-void	ft_echo()
+
+void	ft_echo(t_cmds cmds, char **envp)
 {
 	int i;
+	int nl;
 
 	i = 0;
-
+	if (cmds.args[0])
+		nl = 1 - !!(ft_strncmp("-n", cmds.args[i], 3));
+	else
+		nl = 0;
+	while (cmds.args[i + nl])
+	{
+		ft_printf("%s", cmds.args[i + nl]);
+		i++;
+		if (cmds.args[i + nl])
+			ft_printf(" ");
+	}
+	if (!nl)
+		ft_printf("\n");
+	free_cmd(cmds);
+	(void)envp;
 }
 
-void	parse_input(char *line, char **envp)
+void	ft_cd(t_cmds cmds, char **envp)
 {
-	while (ft_isspace(*line))
-		line++;
-	if (!ft_strncmp(line, "echo", 4))
-		ft_echo(line + 4);
-	else if (!ft_strncmp(line, "cd", 2))
-		ft_cd();
-	else if (!ft_strncmp(line, "pwd", 3))
-		ft_pwd();
-	else if (!ft_strncmp(line, "export", 6))
-		ft_export();
-	else if (!ft_strncmp(line, "unset", 5))
-		ft_unset();
-	else if (!ft_strncmp(line, "env", 3))
-		ft_env();
-	else if (!ft_strncmp(line, "exit", 4))
-		ft_exit();
-	else if (!ft_strncmp(line, "./", 2))
-		ft_exec();
-	else if (!ft_strncmp(line, "'", 1))
-		ft_bquote();
-	else if (!ft_strncmp(line, "\"", 1))
-		ft_dquote();
-}*/
+	return ;
+}
 
-char	*ft_strjoin_free()
+void	ft_empty_cmd(t_cmds cmds, char **envp)
 {
-	return (0);
+	free_cmd(cmds);
+	return ;
 }
 
 /*
@@ -154,6 +255,297 @@ char	*check_quote2(char *line)
 		return (fi_quote(line, fquote));
 	return (line);
 }*/
+
+int		check_err(t_cmds cmds)
+{
+	if (cmds.sep > 1 && cmds.rst == 0)
+	{
+		ft_printf("parse error near `\\n'");
+		return (1);
+	}
+	return (0);
+}
+
+void	cmd_not_f(t_cmds cmds)
+{
+	ft_printf("command not found: %s\n", cmds.cmd);
+	free_cmd(cmds);
+}
+
+int		is_builtin(char *cmd)
+{
+	if (!ft_strncmp("echo", cmd, 5))
+		return (1);
+	if (!ft_strncmp("cd", cmd, 3))
+		return (2);
+	if (!ft_strncmp("pwd", cmd, 4))
+		return (3);
+	if (!ft_strncmp("export", cmd, 7))
+		return (4);
+	if (!ft_strncmp("unset", cmd, 6))
+		return (5);
+	if (!ft_strncmp("env", cmd, 4))
+		return (6);
+	if (!ft_strncmp("exit", cmd, 5))
+		return (7);
+	if (!ft_strncmp("", cmd, 1))
+		return (8);
+	return (0);
+}
+
+char	*get_path(char **envp)
+{
+	int	j;
+
+	j = 0;
+	while (envp[j] && ft_strncmp(envp[j], "PATH", ft_charat(envp[j], '=')))
+		j++;
+	return (envp[j]);
+}
+
+void	simple_exec(t_cmds cmds, char **envp, char *cp)
+{
+	char **argv;
+
+	argv = push_front_tab(cp, cmds.args);
+	if (!fork())
+	{
+		execve(cp, argv, envp);
+		exit(0);
+	}
+	else
+		wait(0);
+	if (cmds.cmd != cp)
+		free(cp);
+	free_tab(argv);
+	free_cmd(cmds);
+	return ;
+}
+
+int		get_perm(struct stat buf, int f)
+{
+	static struct stat min;
+
+	if (f)
+	{
+		stat("./minishell", &min);
+		return (1);
+	}
+	if (buf.st_uid == min.st_uid && buf.st_mode & 00100)
+		return (1);
+	if (buf.st_uid != min.st_uid &&
+		buf.st_gid == min.st_gid && buf.st_mode & 00010)
+		return (1);
+	if (buf.st_uid != min.st_uid &&
+		buf.st_gid != min.st_gid && buf.st_mode & 00001)
+		return (1);
+	return (0);
+}
+
+char	*isinpath(t_cmds cmds, char **envp, int *j)
+{
+	struct stat	buf;
+	char		**paths;
+	char		*nl;
+	int			i;
+
+	if (!(paths = ft_split(get_path(envp), ':')))
+		return (0);
+	i = 0;
+	while (paths[i])
+	{
+		if (stat(nl = ft_strjoinfree2(paths[i],
+			ft_strjoin("/", cmds.cmd)), &buf) == -1)
+			free(nl);
+		else
+			break ;
+		nl = 0;
+		i++;
+	}
+	free_tab(paths);
+	if (get_perm(buf, 0))
+		return (nl);
+	else if (nl != 0)
+		*j = 0 - !!ft_printf("permission denied: %s\n", cmds.cmd);
+	return (0);
+}
+
+int		isindir(t_cmds cmds, char **envp, int *j)
+{
+	int i;
+	struct stat buf;
+
+	if ((i = ft_charat(cmds.cmd, '/')) == -1)
+		return (0);
+	if (stat(cmds.cmd, &buf) == -1)
+	{
+		*j = -1;
+		ft_printf("no such file or directory: %s\n", cmds.cmd);
+		free_cmd(cmds);
+		return (0);
+	}
+	if (get_perm(buf, 0))
+		return (1);
+	else
+	{
+		*j = -1;
+		ft_printf("permission denied: %s\n", cmds.cmd);
+		free_cmd(cmds);
+	}
+	return (0);
+}
+
+void	single_cmd(t_cmds cmds, char **envp)
+{
+	int		i;
+	char	*cp;
+	void	(*builtin[8])(t_cmds cmds, char **envp);
+
+	builtin[0] = &ft_echo;
+	builtin[1] = &ft_cd;
+	builtin[7] = &ft_empty_cmd;
+	if ((i = is_builtin(cmds.cmd)))
+		builtin[i - 1](cmds, envp);
+	else if ((cp = isinpath(cmds, envp, &i)))
+		simple_exec(cmds, envp, cp);
+	else if (i != -1 && cp == 0 && isindir(cmds, envp, &i))
+		simple_exec(cmds, envp, cmds.cmd);
+	else if (i != -1)
+		cmd_not_f(cmds);
+	if (cmds.sep == 1)
+		parse_line(cmds.rst, envp);
+}
+
+void	prep_pipe(int p1, int p2, int mode)
+{
+	close(p1);
+	dup2(p2, mode);
+	close(p2);
+}
+
+int		into_pipe(t_cmds cmds, char **envp)
+{
+	int		pipefd[2];
+	int		nstdin;
+	int		nstdout;
+	pid_t	cpid;
+
+	if (pipe(pipefd) == -1)
+		return (ft_printf("Failure to pipe\n"));
+	nstdin = dup(0);
+	nstdout = dup(1);
+	if ((cpid = fork()) == -1)
+		return (ft_printf("Failure to fork\n"));
+	if (cpid == 0)
+	{
+		prep_pipe(pipefd[0], pipefd[1], 1);
+		single_cmd(cmds, envp);
+		exit(0);
+	}
+	else
+	{
+		prep_pipe(pipefd[1], pipefd[0], 0);
+		parse_line(cmds.rst, envp);
+		wait(0);
+	}
+	dup2(nstdin, 0);
+	dup2(nstdout, 1);
+}
+
+int		redir_form_file(t_cmds cmds, int fd, char **envp)
+{
+	int		nstdin;
+
+	nstdin = dup(0);
+	dup2(fd, 0);
+	ft_dispatch(cmds, envp);
+	close(fd);
+	dup2(nstdin, 0);
+	close(nstdin);
+	return (0);
+}
+
+int		from_file(t_cmds cmds, char **envp)
+{
+	size_t	i;
+	int		fd;
+	t_cmds	rst_cmd;
+
+	if (cmds.rst == 0 || cmds.rst[0] == 0)
+		return (ft_printf("parse error near \\n\n"));
+	i = 0;
+	while (ft_isspace(cmds.rst[i]))
+		i++;
+	rst_cmd.cmd = get_cmd(cmds.rst, &i);
+	if ((fd = open(rst_cmd.cmd, O_RDONLY)) == -1)
+		return (ft_printf("no such file or directory: %s\n", rst_cmd.cmd));
+	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
+	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
+	if ((cmds.sep = get_sep(cmds.rst, &i)))
+		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
+	else
+		rst_cmd.rst = 0;
+	free(cmds.rst);
+	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
+	free_cmd(rst_cmd);
+	return (redir_form_file(cmds, fd, envp));
+}
+
+int		redir_into_file(t_cmds cmds, int fd, char **envp)
+{
+	int		nstdout;
+
+	nstdout = dup(1);
+	dup2(fd, 1);
+	ft_dispatch(cmds, envp);
+	close(fd);
+	dup2(nstdout, 1);
+	close(nstdout);
+	return (0);
+}
+
+int		into_file(t_cmds cmds, char **envp, int mod)
+{
+	size_t	i;
+	int		fd;
+	t_cmds	rst_cmd;
+
+	if (cmds.rst == 0 || cmds.rst[0] == 0)
+		return (ft_printf("parse error near \\n\n"));
+	i = 0;
+	while (ft_isspace(cmds.rst[i]))
+		i++;
+	rst_cmd.cmd = get_cmd(cmds.rst, &i);
+	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
+		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY, 0644)) == -1))
+		return (ft_printf("permission denied: %s\n", rst_cmd.cmd));
+	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
+	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
+	if ((cmds.sep = get_sep(cmds.rst, &i)))
+		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
+	else
+		rst_cmd.rst = 0;
+	free(cmds.rst);
+	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
+	free_cmd(rst_cmd);
+	return (redir_into_file(cmds, fd, envp));
+}
+
+void	ft_dispatch(t_cmds cmds, char **envp)
+{
+	if (check_err(cmds))
+		return ;
+	if (cmds.sep == 0 || cmds.sep == 1)
+		single_cmd(cmds, envp);
+	if (cmds.sep == 2)
+		into_pipe(cmds, envp);
+	if (cmds.sep == 3)
+		from_file(cmds, envp);
+	if (cmds.sep == 4 || cmds.sep == 5)
+		into_file(cmds, envp, cmds.sep - 4);
+	//if (cmds.sep == 5)
+	//	into_eof(cmds, envp);
+}
 
 int		check_quote(char *line)
 {
@@ -220,7 +612,7 @@ char	*get_args(char *line, size_t *i)
 	while (line[*i] && tab[0] != 1)
 	{
 		tab[0] = 0;
-		if ((line[*i] == ' ' || ft_isinset(line[*i], SEP_SET))
+		if (((line[*i] == ' ') || ft_isinset(line[*i], SEP_SET))
 			&& !(tab[1] % 2) && !(tab[2] % 2))
 			tab[0] = (line[*i] == ' ') ? 7 : 1;
 		if (line[*i] == '\'' && !(tab[2] % 2))
@@ -258,99 +650,32 @@ int		get_sep(char *line, size_t *i)
 int		parse_line(char *line, char **envp)
 {
 	t_cmds	cmds;
-	//size_t	size;
 	size_t	i;
 
-	//size = ft_strlen(line);
 	i = 0;
-	//if (check_quote(line))
-	//	return (1);
-	// 1 : avance tous whitspace
 	while (ft_isspace(line[i]))
 		i++;
-	// 2 : commande = tous jusqu'a un espace ou un sep qui n'est pas entre quote ou dquote
 	cmds.cmd = get_cmd(line, &i);
-	// 3 : avance tous whitspace
 	while (ft_isspace(line[i]))
 		i++;
-	// BALEC => 4 : option = tous ce qui match une option jusqu'qu prochain espace qui n'est pas entre quote ou dquote
-	// 5 : args = tous le reste, separe par des espaces, jusqu'a un separator qui n'est pas entre quote ou dquote
-	//printf("%s\n", line + i);
-	//printf("%s\n", "\7");
-	cmds.args = ft_split(get_args(line, &i), 7);
-	//printf("%i	%p\n", line[i], cmds.args);
-	// 6 : separator = "SEPSET"
+	cmds.args = ft_split_free(get_args(line, &i), 7);
 	if ((cmds.sep = get_sep(line, &i)))
 		cmds.rst = ft_strdup(line + i + 1 + (cmds.sep == 5));
 	else
 		cmds.rst = 0;
+	//int j = 0;
+	//printf("%s\n", cmds.cmd);
+	//while (cmds.args[j] != 0)
+	//{
+	//	printf("%s\n", cmds.args[j]);
+	//	j++;
+	//}
+	//printf("%i\n", cmds.sep);
 	//printf("%s\n", cmds.rst);
-	// 7 : loop 1
-	int j = 0;
-	printf("%s\n", cmds.cmd);
-	while (cmds.args[j] != 0)
-	{
-		printf("%s\n", cmds.args[j]);
-		j++;
-	}
+	free(line);
+	ft_dispatch(cmds, envp);
 	return (0);
 }
-
-size_t	ft_charat(const char *str, int c)
-{
-	size_t i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-/*
-char	*get_var_env(char *cmd, char **menv)
-{
-	int i;
-	int size;
-	char *tmp;
-	int len;
-	int j;
-	i = 0;
-	size = 0;
-	len = 0;
-	j = 0;
-	while(cmd[i])
-	{
-		if (cmd[i] == '$' && (cmd[i + 1] != ' ' && cmd[i + 1] != '\0' && cmd[i + 1] != ';'))
-		{
-			while(!ft_strchr(" ;\"'", cmd[i + size]) && cmd[i + size])
-				size++;
-			//printf("%i\n", i + size);
-			while(menv[j] && ft_strncmp(menv[j], &cmd[i + 1], ft_charat(menv[j], '=')) != 0)
-				j++;
-			//printf("%s\n", menv[j]);
-			if (!menv[j])
-				return (0);
-			len = ft_strlen(cmd) + ft_strlen(menv[j]) - ((size) * 2);
-			//printf("%i\n", len);
-			if(!(tmp = calloc(1, sizeof(char) * (len + 1))))
-				return (0);
-			memcpy(tmp, cmd, i);
-			len = ft_strlen(menv[j]) - (size + 1);
-			ft_memcpy(&tmp[i], &menv[j][size], (len + 1));
-			ft_memcpy(&tmp[i + len], &cmd[i + size], (ft_strlen(&cmd[i + size])));
-			//printf("%s\n", tmp);
-			free(cmd);
-			cmd = tmp;
-			i = 0;
-		}
-		i++;
-	}
-	printf("%s\n", cmd);
-	return (cmd);
-}*/
 
 size_t	find_dol(char *line)
 {
@@ -408,7 +733,7 @@ int		get_var_env(char **line, size_t os, char **menv)
 	size_t	pdol;
 	size_t	j;
 
-	if (!ft_strlen(*line) || (i = find_dol(((*line) + os))) == -1)
+	if (!ft_strlen(*line) || (i = find_dol(((*line) + os))) == (size_t)-1)
 		return (0);
 	pdol = 1;
 	while (*(*line + i + pdol + os) &&
@@ -424,7 +749,7 @@ int		get_var_env(char **line, size_t os, char **menv)
 		j++;
 	if (!rpl_var(line, i + os, pdol, menv[j]))
 		return (-1);
-	if ((i = find_dol(((*line) + os)) == -1))
+	if ((i = find_dol(((*line) + os)) == (size_t)-1))
 		return (0);
 	return (get_var_env(line, os, menv));
 }
@@ -455,25 +780,32 @@ void	entry_loop(char **envp)
 		//parse_input(line, envp);
 		//printf("%s\n", get_var_env(line, envp));
 		get_var_env(&line, 0, envp);
-		printf("POSTVAR :%s\n", line);
-		//stop = parse_line(line, envp);
+		//printf("POSTVAR :%s\n", line);
+		stop = parse_line(line, envp);
 		//printf("%s\n", line);
-		//free(line);
+		//system("leaks minishell");
 	}
 	//}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
+	 
 	signal(SIGINT, signal_callback_handler);
+	signal(3, sign3);
 
-	char** env;
-	for(env=envp;*env!=0;env++)
-	{
-		char* thisEnv = *env;
-		printf("%s\n",thisEnv);
-	}
-	//execve("/bin/echo", argv, envp);
+	//char** env;
+	//for(env=envp;*env!=0;env++)
+	//{
+	//	char* thisEnv = *env;
+	//	printf("%s\n",thisEnv);
+	//}
+	//printf("%o\n", buf.st_mode & 0100);
+	//printf("%i\n", 0777);
+	//printf("%i\n", execve("test.txt", argv, envp));
+	struct stat susless;
+	stat("./minihell", &susless);
+	get_perm(susless, 1);
 	entry_loop(envp);
 	//char *str;
 	//str = malloc(10000);
