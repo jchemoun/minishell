@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/28 13:46:41 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/28 14:53:41 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,7 @@ int		check_err(t_cmds cmds)
 	if (cmds.sep > 1 && cmds.rst == 0)
 	{
 		ft_printf("parse error near `\\n'");
+		free_cmd(cmds);
 		return (1);
 	}
 	return (0);
@@ -450,6 +451,7 @@ int		into_pipe(t_cmds cmds, char **envp)
 	}
 	dup2(nstdin, 0);
 	dup2(nstdout, 1);
+	free_cmd(cmds);
 }
 
 int		redir_form_file(t_cmds cmds, int fd, char **envp)
@@ -543,8 +545,6 @@ void	ft_dispatch(t_cmds cmds, char **envp)
 		from_file(cmds, envp);
 	if (cmds.sep == 4 || cmds.sep == 5)
 		into_file(cmds, envp, cmds.sep - 4);
-	//if (cmds.sep == 5)
-	//	into_eof(cmds, envp);
 }
 
 int		check_quote(char *line)
@@ -783,7 +783,7 @@ void	entry_loop(char **envp)
 		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
 		//printf("%s\n", line);
-		//system("leaks minishell");
+		system("leaks minishell");
 	}
 	//}
 }
