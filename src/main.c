@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/28 14:53:41 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/03 10:46:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		ft_isspace(char c)
+int			ft_isspace(char c)
 {
 	if (c == '\t' || c == '\n' || c == '\v'
 		|| c == '\f' || c == '\r' || c == ' ')
@@ -20,7 +20,7 @@ int		ft_isspace(char c)
 	return (0);
 }
 
-size_t	ft_charat(const char *str, int c)
+size_t		ft_charat(const char *str, int c)
 {
 	size_t i;
 
@@ -34,17 +34,17 @@ size_t	ft_charat(const char *str, int c)
 	return (-1);
 }
 
-void	signal_callback_handler(int signum)
+void		signal_callback_handler(int signum)
 {
 	ft_printf("\n> ");
 }
 
-void	sign3(int signum)
+void		sign3(int signum)
 {
 	return ;
 }
 
-int		free_tab(char **args)
+int			free_tab(char **args)
 {
 	int i;
 
@@ -59,13 +59,13 @@ int		free_tab(char **args)
 	return (1);
 }
 
-void	free_cmd(t_cmds cmds)
+void		free_cmd(t_cmds cmds)
 {
 	free(cmds.cmd);
 	free_tab(cmds.args);
 }
 
-char	*ft_strjoinfree2(const char *s1, const char *s2)
+char		*ft_strjoinfree2(const char *s1, const char *s2)
 {
 	size_t	len;
 	size_t	i;
@@ -92,7 +92,7 @@ char	*ft_strjoinfree2(const char *s1, const char *s2)
 	return (re);
 }
 
-char	**push_front_tab(char *cp, char **args)
+char		**push_front_tab(char *cp, char **args)
 {
 	char	**re;
 	size_t	i;
@@ -114,7 +114,7 @@ char	**push_front_tab(char *cp, char **args)
 	return (re);
 }
 
-char	**ft_join_tabs(char **t1, char **t2)
+char		**ft_join_tabs(char **t1, char **t2)
 {
 	char	**re;
 	size_t	i;
@@ -141,7 +141,7 @@ char	**ft_join_tabs(char **t1, char **t2)
 
 }
 
-char	**ft_join_tabs_free1(char **t1, char **t2)
+char		**ft_join_tabs_free1(char **t1, char **t2)
 {
 	char	**re;
 
@@ -150,7 +150,7 @@ char	**ft_join_tabs_free1(char **t1, char **t2)
 	return (re);
 }
 
-char	*read_line(void)
+char		*read_line(void)
 {
 	char	*buf;
 	int		c;
@@ -172,7 +172,7 @@ char	*read_line(void)
 	return (0);
 }
 
-void	ft_echo(t_cmds cmds, char **envp)
+void		ft_echo(t_cmds cmds, char **envp)
 {
 	int i;
 	int nl;
@@ -195,12 +195,113 @@ void	ft_echo(t_cmds cmds, char **envp)
 	(void)envp;
 }
 
-void	ft_cd(t_cmds cmds, char **envp)
+void		ft_cd(t_cmds cmds, char **envp)
 {
-	return ;
+	struct stat buf;
+
+	if (stat(cmds.args[0], &buf) == -1)
+	{
+		ft_printf("no such file or directory: %s\n", cmds.cmd);
+		free_cmd(cmds);
+		return ;
+	}
+	if (get_perm(buf, 0))
+	{
+		chdir(cmds.args[0]);
+		free_cmd(cmds);
+	}
+	else
+	{
+		ft_printf("permission denied: %s\n", cmds.cmd);
+		free_cmd(cmds);
+	}
 }
 
-void	ft_empty_cmd(t_cmds cmds, char **envp)
+void		ft_pwd(t_cmds cmds, char **envp)
+{
+	char pwd[BUF_S];
+
+	free_cmd(cmds);
+	if (!(getcwd(pwd, BUF_S)))
+	{
+		ft_printf("Error in getcwd\n");
+		return ;
+	}
+	ft_printf("%s\n", pwd);
+}
+
+void		ft_export(t_cmds cmds, char **envp)
+{
+	size_t	i;
+	size_t	j;
+
+	if (cmds.args[0] == 0)
+	{
+		ft_env(cmds, envp);
+		return ;
+	}
+	j = 0;
+	while (cmds.args[j])
+	{
+		if (ft_charat(cmds.args[j], '=') != -1)
+		{
+			i = 0;
+			while (envp[i] && ft_strncmp(envp[i], cmds.args[j], ft_charat(envp[i], '=')))
+				i++;
+			if (envp[i] != 0)
+				envp[i] = cmds.args[j];
+		}
+		j++;
+	}
+}
+
+void		ft_unset(t_cmds cmds, char **envp)
+{
+	size_t	i;
+	size_t	j;
+	int		rm[BUF_S];
+	char	**nenvp;
+
+	if (cmds.args[0] == 0)
+		return ;
+	i = 0;
+	j = 0;
+	rm[0] = 0;
+	while (cmds.args[j])
+	{
+		while (envp[i])
+		{
+			if (ft_strncmp(envp[i], cmds.args[j], ft_charat(envp[i], '=')))
+				rm[rm[0]++] = i;
+			i++;
+		}
+		j++;
+	}
+	if (!(nenvp = malloc(sizeof(char*) * (i - rm[0] + 1))))
+		return ;
+	//ft_unset2(nenvp, envp, rm);
+	free_cmd(cmds);
+}
+
+void		ft_unset2(char **nenvp, char **envp, char rm[BUF_S])
+{
+
+}
+
+void		ft_env(t_cmds cmds, char **envp)
+{
+	size_t	i;
+
+	i = 0;
+	free_cmd(cmds);
+	while (envp[i])
+	{
+		ft_printf("%s\n", envp[i]);
+		i++;
+	}
+}
+
+void		ft_empty_cmd(t_cmds cmds, char **envp)
 {
 	free_cmd(cmds);
 	return ;
@@ -404,6 +505,9 @@ void	single_cmd(t_cmds cmds, char **envp)
 
 	builtin[0] = &ft_echo;
 	builtin[1] = &ft_cd;
+	builtin[2] = &ft_pwd;
+	builtin[3] = &ft_export;
+	builtin[5] = &ft_env;
 	builtin[7] = &ft_empty_cmd;
 	if ((i = is_builtin(cmds.cmd)))
 		builtin[i - 1](cmds, envp);
@@ -783,7 +887,7 @@ void	entry_loop(char **envp)
 		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
 		//printf("%s\n", line);
-		system("leaks minishell");
+		//system("leaks minishell");
 	}
 	//}
 }
@@ -804,7 +908,7 @@ int	main(int argc, char **argv, char **envp)
 	//printf("%i\n", 0777);
 	//printf("%i\n", execve("test.txt", argv, envp));
 	struct stat susless;
-	stat("./minihell", &susless);
+	stat(argv[0], &susless);
 	get_perm(susless, 1);
 	entry_loop(envp);
 	//char *str;
