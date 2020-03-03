@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 12:31:45 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/03 14:35:04 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,29 @@ char		**push_front_tab(char *cp, char **args)
 	return (re);
 }
 
+char		**push_front_tab_free(char *cp, char **args)
+{
+	char	**re;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (args[i])
+		i++;
+	if (!(re = malloc(sizeof(char*) * (i + 2))))
+		return (0);
+	re[0] = strdup(cp);
+	while (j < i)
+	{
+		re[j + 1] = strdup(args[j]);
+		j++;
+	}
+	re[j + 1] = 0;
+	free_tab(args);
+	return (re);
+}
+
 char		**ft_join_tabs(char **t1, char **t2)
 {
 	char	**re;
@@ -172,7 +195,7 @@ char		*read_line(void)
 	return (0);
 }
 
-void		ft_echo(t_cmds cmds, char **envp)
+void		ft_echo(t_cmds cmds, char ***envp)
 {
 	int i;
 	int nl;
@@ -195,7 +218,7 @@ void		ft_echo(t_cmds cmds, char **envp)
 	(void)envp;
 }
 
-void		ft_cd(t_cmds cmds, char **envp)
+void		ft_cd(t_cmds cmds, char ***envp)
 {
 	struct stat buf;
 
@@ -217,7 +240,7 @@ void		ft_cd(t_cmds cmds, char **envp)
 	}
 }
 
-void		ft_pwd(t_cmds cmds, char **envp)
+void		ft_pwd(t_cmds cmds, char ***envp)
 {
 	char pwd[BUF_S];
 
@@ -230,32 +253,38 @@ void		ft_pwd(t_cmds cmds, char **envp)
 	ft_printf("%s\n", pwd);
 }
 
-void		ft_export(t_cmds cmds, char **envp)
+void		ft_export(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 	size_t	j;
 
+	j = 0;
 	if (cmds.args[0] == 0)
 	{
-		ft_env(cmds, envp);
+		while ((*envp)[j])
+		{
+			ft_printf("declare -x %s\n", (*envp)[j]);
+			j++;
+		}
 		return ;
 	}
-	j = 0;
 	while (cmds.args[j])
 	{
 		if (ft_charat(cmds.args[j], '=') != (size_t)-1)
 		{
 			i = 0;
-			while (envp[i] && ft_strncmp(envp[i], cmds.args[j], ft_charat(envp[i], '=')))
+			while ((*envp)[i] && ft_strncmp((*envp)[i], cmds.args[j], ft_charat((*envp)[i], '=')))
 				i++;
-			if (envp[i] != 0)
-				envp[i] = cmds.args[j];
+			if ((*envp)[i] != 0)
+				(*envp)[i] = cmds.args[j];
+			else
+				(*envp) = push_front_tab(cmds.args[j], (*envp));
 		}
 		j++;
 	}
 }
 
-void		ft_unset(t_cmds cmds, char **envp)
+void		ft_unset(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 	size_t	j;
@@ -268,34 +297,33 @@ void		ft_unset(t_cmds cmds, char **envp)
 	{
 		i = 0;
 		os = 0;
-		while (envp[i + os])
+		while ((*envp)[i + os])
 		{
-			printf("en %s	arg %s\n", envp[i + os], cmds.args[j]);
-			if (cmds.args[j] && !ft_strncmp(envp[i + os], cmds.args[j], ft_charat(envp[i], '=')))
+			if (cmds.args[j] && !ft_strncmp((*envp)[i + os], cmds.args[j], ft_charat((*envp)[i], '=')))
 				os++;
-			envp[i] = envp[i + os];
+			(*envp)[i] = (*envp)[i + os];
 			i++;
 		}
-		envp[i] = 0;
+		(*envp)[i] = 0;
 		j++;
 	}
 	free_cmd(cmds);
 }
 
-void		ft_env(t_cmds cmds, char **envp)
+void		ft_env(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 
 	i = 0;
 	free_cmd(cmds);
-	while (envp[i])
+	while ((*envp)[i])
 	{
-		ft_printf("%s\n", envp[i]);
+		ft_printf("%s\n", (*envp)[i]);
 		i++;
 	}
 }
 
-void		ft_empty_cmd(t_cmds cmds, char **envp)
+void		ft_empty_cmd(t_cmds cmds, char ***envp)
 {
 	free_cmd(cmds);
 	return ;
@@ -491,11 +519,11 @@ int		isindir(t_cmds cmds, char **envp, int *j)
 	return (0);
 }
 
-void	single_cmd(t_cmds cmds, char **envp)
+void	single_cmd(t_cmds cmds, char ***envp)
 {
 	int		i;
 	char	*cp;
-	void	(*builtin[8])(t_cmds cmds, char **envp);
+	void	(*builtin[8])(t_cmds cmds, char ***envp);
 
 	builtin[0] = &ft_echo;
 	builtin[1] = &ft_cd;
@@ -506,10 +534,10 @@ void	single_cmd(t_cmds cmds, char **envp)
 	builtin[7] = &ft_empty_cmd;
 	if ((i = is_builtin(cmds.cmd)))
 		builtin[i - 1](cmds, envp);
-	else if ((cp = isinpath(cmds, envp, &i)))
-		simple_exec(cmds, envp, cp);
-	else if (i != -1 && cp == 0 && isindir(cmds, envp, &i))
-		simple_exec(cmds, envp, cmds.cmd);
+	else if ((cp = isinpath(cmds, *envp, &i)))
+		simple_exec(cmds, *envp, cp);
+	else if (i != -1 && cp == 0 && isindir(cmds, *envp, &i))
+		simple_exec(cmds, *envp, cmds.cmd);
 	else if (i != -1)
 		cmd_not_f(cmds);
 	if (cmds.sep == 1)
@@ -523,7 +551,7 @@ void	prep_pipe(int p1, int p2, int mode)
 	close(p2);
 }
 
-int		into_pipe(t_cmds cmds, char **envp)
+int		into_pipe(t_cmds cmds, char ***envp)
 {
 	int		pipefd[2];
 	int		nstdin;
@@ -553,7 +581,7 @@ int		into_pipe(t_cmds cmds, char **envp)
 	free_cmd(cmds);
 }
 
-int		redir_form_file(t_cmds cmds, int fd, char **envp)
+int		redir_form_file(t_cmds cmds, int fd, char ***envp)
 {
 	int		nstdin;
 
@@ -566,7 +594,7 @@ int		redir_form_file(t_cmds cmds, int fd, char **envp)
 	return (0);
 }
 
-int		from_file(t_cmds cmds, char **envp)
+int		from_file(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 	int		fd;
@@ -592,7 +620,7 @@ int		from_file(t_cmds cmds, char **envp)
 	return (redir_form_file(cmds, fd, envp));
 }
 
-int		redir_into_file(t_cmds cmds, int fd, char **envp)
+int		redir_into_file(t_cmds cmds, int fd, char ***envp)
 {
 	int		nstdout;
 
@@ -605,7 +633,7 @@ int		redir_into_file(t_cmds cmds, int fd, char **envp)
 	return (0);
 }
 
-int		into_file(t_cmds cmds, char **envp, int mod)
+int		into_file(t_cmds cmds, char ***envp, int mod)
 {
 	size_t	i;
 	int		fd;
@@ -632,7 +660,7 @@ int		into_file(t_cmds cmds, char **envp, int mod)
 	return (redir_into_file(cmds, fd, envp));
 }
 
-void	ft_dispatch(t_cmds cmds, char **envp)
+void	ft_dispatch(t_cmds cmds, char ***envp)
 {
 	if (check_err(cmds))
 		return ;
@@ -746,7 +774,7 @@ int		get_sep(char *line, size_t *i)
 	return (0);
 }
 
-int		parse_line(char *line, char **envp)
+int		parse_line(char *line, char ***envp)
 {
 	t_cmds	cmds;
 	size_t	i;
@@ -853,7 +881,7 @@ int		get_var_env(char **line, size_t os, char **menv)
 	return (get_var_env(line, os, menv));
 }
 
-void	entry_loop(char **envp)
+void	entry_loop(char ***envp)
 {
 	char	*line;
 	char	**args;
@@ -878,7 +906,7 @@ void	entry_loop(char **envp)
 		line = read_line();
 		//parse_input(line, envp);
 		//printf("%s\n", get_var_env(line, envp));
-		get_var_env(&line, 0, envp);
+		get_var_env(&line, 0, *envp);
 		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
 		//printf("%s\n", line);
@@ -905,7 +933,7 @@ int	main(int argc, char **argv, char **envp)
 	struct stat susless;
 	stat(argv[0], &susless);
 	get_perm(susless, 1);
-	entry_loop(envp);
+	entry_loop(&envp);
 	//char *str;
 	//str = malloc(10000);
 	//int i = 0;
