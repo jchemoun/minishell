@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 14:27:38 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/13 13:19:31 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/28 15:05:15 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int		get_next_line_cd(int fd, char **line)
 	static char *stc[1024] = {0};
 	char		*buf;
 	int			found;
-	int			r_size;
+	int			r;
 
 	if (BUFFER_SIZE < 1 || !(*line = ft_init(&found)))
 		return (-1);
@@ -107,10 +107,10 @@ int		get_next_line_cd(int fd, char **line)
 		{
 			if (!(buf = malloc(BUFFER_SIZE)))
 				return (-1);
-			if ((r_size = read(fd, buf, BUFFER_SIZE)) == -1)
+			if ((r = read(fd, buf, BUFFER_SIZE)) == -1)
 				found = -1;
 			else
-				found = (r_size || (**line)) ? ft_fill(&stc[fd], line, &buf, r_size) : 2;
+				found = (r || (**line)) ? ft_fill(&stc[fd], line, &buf, r) : 2;
 		}
 	}
 	buf != 0 ? free(buf) : 0;

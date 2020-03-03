@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/09 14:11:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 16:53:05 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/27 10:58:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,33 @@ char			**ft_split(char const *s, char c)
 		i++;
 	}
 	re[j] = 0;
+	return (re);
+}
+
+char			**ft_split_free(char *s, char c)
+{
+	int		i;
+	int		j;
+	int		n_word;
+	char	prev;
+	char	**re;
+
+	if (!s)
+		return (0);
+	i = 0;
+	j = 0;
+	n_word = ft_countw(s, c);
+	prev = s[0];
+	if (!(re = malloc(sizeof(char*) * (n_word + 1))))
+		return (0);
+	while (s[i] && j < n_word)
+	{
+		if ((s[i] != c && prev == c) || (s[i] != c && i == 0))
+			re[j++] = ft_strdnup(s + i, c);
+		prev = s[i];
+		i++;
+	}
+	re[j] = 0;
+	free(s);
 	return (re);
 }
