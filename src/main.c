@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 10:46:36 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/03 12:11:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ void		ft_export(t_cmds cmds, char **envp)
 	j = 0;
 	while (cmds.args[j])
 	{
-		if (ft_charat(cmds.args[j], '=') != -1)
+		if (ft_charat(cmds.args[j], '=') != (size_t)-1)
 		{
 			i = 0;
 			while (envp[i] && ft_strncmp(envp[i], cmds.args[j], ft_charat(envp[i], '=')))
@@ -259,33 +259,27 @@ void		ft_unset(t_cmds cmds, char **envp)
 {
 	size_t	i;
 	size_t	j;
-	int		rm[BUF_S];
-	char	**nenvp;
+	size_t	os;
 
 	if (cmds.args[0] == 0)
 		return ;
-	i = 0;
 	j = 0;
-	rm[0] = 0;
 	while (cmds.args[j])
 	{
-		while (envp[i])
+		i = 0;
+		os = 0;
+		while (envp[i + os])
 		{
-			if (ft_strncmp(envp[i], cmds.args[j], ft_charat(envp[i], '=')))
-				rm[rm[0]++] = i;
+			printf("en %s	arg %s\n", envp[i + os], cmds.args[j]);
+			if (cmds.args[j] && !ft_strncmp(envp[i + os], cmds.args[j], ft_charat(envp[i], '=')))
+				os++;
+			envp[i] = envp[i + os];
 			i++;
 		}
+		envp[i] = 0;
 		j++;
 	}
-	if (!(nenvp = malloc(sizeof(char*) * (i - rm[0] + 1))))
-		return ;
-	//ft_unset2(nenvp, envp, rm);
 	free_cmd(cmds);
-}
-
-void		ft_unset2(char **nenvp, char **envp, char rm[BUF_S])
-{
-
 }
 
 void		ft_env(t_cmds cmds, char **envp)
@@ -507,6 +501,7 @@ void	single_cmd(t_cmds cmds, char **envp)
 	builtin[1] = &ft_cd;
 	builtin[2] = &ft_pwd;
 	builtin[3] = &ft_export;
+	builtin[4] = &ft_unset;
 	builtin[5] = &ft_env;
 	builtin[7] = &ft_empty_cmd;
 	if ((i = is_builtin(cmds.cmd)))
