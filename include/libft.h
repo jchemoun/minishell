@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 10:50:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/22 10:09:01 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/27 10:58:51 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int				ft_putnbr_base(unsigned long long int n, char *base);
 void			ft_putstr_fd(char *s, int fd);
 
 char			**ft_split(char const *s, char c);
+char			**ft_split_free(char *s, char c);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *s1);
 char			*ft_strjoin(char const *s1, char const *s2);

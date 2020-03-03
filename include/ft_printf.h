@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 13:28:15 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/13 13:17:01 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/28 15:02:10 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # define N_CONV 10
 # define N_FLAG 8
 
+int	ft_printf(const char *f, ...);
 int	ft_print_nbr(int conv[N_FLAG], va_list pa);
 int	ft_print_ptr(int conv[N_FLAG], va_list pa);
 int	ft_print_mxnbr(int conv[N_FLAG], va_list pa);
