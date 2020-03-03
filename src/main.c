@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 14:35:04 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/03 15:31:10 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,68 @@ char		**ft_join_tabs_free1(char **t1, char **t2)
 	return (re);
 }
 
+int			ft_nbl(char **envp)
+{
+	int i;
+
+	i = 0;
+	while(envp[i])
+		i++;
+	return (i);
+}
+
+char	**ft_copy(char **envp)
+{
+	char **fenv;
+	int i;
+
+	if (!(fenv = malloc(sizeof(char *) * (ft_nbl(envp) + 1))))
+		return (NULL);
+	i = 0;
+	while(envp[i])
+	{
+		fenv[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	fenv[i] = 0;
+	return (fenv);	
+}
+
+char		**ft_sort_env(char **fenv)
+{
+	int i;
+	char *tmp;
+
+	i = 0;
+	while(fenv[i + 1])
+	{
+		if (ft_strncmp(fenv[i], fenv[i + 1], ft_charat(fenv[i], '=') >
+			ft_charat(fenv[i + 1], '=') ? ft_charat(fenv[i], '=') :
+			ft_charat(fenv[i + 1], '=')) > 0)
+		{
+			tmp = fenv[i];
+			fenv[i] = fenv[i + 1];
+			fenv[i + 1] = tmp;
+			i = 0;
+		}
+		else
+			i++;
+	}
+	return(fenv);
+}
+
+void		ft_displayfree(char **fenv)
+{
+	int i;
+	i = 0;
+	while(fenv[i])
+	{
+		ft_printf("%s\n", fenv[i]);
+		i++;
+	}
+	free_tab(fenv);
+}
+
 char		*read_line(void)
 {
 	char	*buf;
@@ -261,11 +323,7 @@ void		ft_export(t_cmds cmds, char ***envp)
 	j = 0;
 	if (cmds.args[0] == 0)
 	{
-		while ((*envp)[j])
-		{
-			ft_printf("declare -x %s\n", (*envp)[j]);
-			j++;
-		}
+		ft_displayfree(ft_sort_env(ft_copy(*envp)));
 		return ;
 	}
 	while (cmds.args[j])
@@ -282,6 +340,7 @@ void		ft_export(t_cmds cmds, char ***envp)
 		}
 		j++;
 	}
+	free_cmd(cmds);
 }
 
 void		ft_unset(t_cmds cmds, char ***envp)
@@ -321,6 +380,32 @@ void		ft_env(t_cmds cmds, char ***envp)
 		ft_printf("%s\n", (*envp)[i]);
 		i++;
 	}
+}
+
+void	ft_exit(t_cmds cmds, char ***envp)
+{
+	int nb;
+	int i;
+
+	i = 0;
+	if (cmds.args[0] == 0)
+		exit(0);
+	else if (cmds.args[1] != 0)
+	{
+		ft_printf("Too many argument\n");
+		return ;
+	}
+	if (cmds.args[0][i] == '+' || cmds.args[0][i] == '-')
+		i++;
+	while(ft_isdigit(cmds.args[0][i]))
+		i++;
+	if (cmds.args[0][i] != 0)
+	{
+		ft_printf("Numeric argument required\n");
+		return ;
+	}
+	nb = ft_atoi(cmds.args[0]);
+	exit((unsigned char)nb);
 }
 
 void		ft_empty_cmd(t_cmds cmds, char ***envp)
@@ -531,6 +616,7 @@ void	single_cmd(t_cmds cmds, char ***envp)
 	builtin[3] = &ft_export;
 	builtin[4] = &ft_unset;
 	builtin[5] = &ft_env;
+	builtin[6] = &ft_exit;
 	builtin[7] = &ft_empty_cmd;
 	if ((i = is_builtin(cmds.cmd)))
 		builtin[i - 1](cmds, envp);
@@ -579,6 +665,7 @@ int		into_pipe(t_cmds cmds, char ***envp)
 	dup2(nstdin, 0);
 	dup2(nstdout, 1);
 	free_cmd(cmds);
+	return (0);
 }
 
 int		redir_form_file(t_cmds cmds, int fd, char ***envp)
@@ -917,34 +1004,15 @@ void	entry_loop(char ***envp)
 
 int	main(int argc, char **argv, char **envp)
 {
-	 
+	char **nenvp;
+	struct stat susless;
+
 	signal(SIGINT, signal_callback_handler);
 	signal(3, sign3);
-
-	//char** env;
-	//for(env=envp;*env!=0;env++)
-	//{
-	//	char* thisEnv = *env;
-	//	printf("%s\n",thisEnv);
-	//}
-	//printf("%o\n", buf.st_mode & 0100);
-	//printf("%i\n", 0777);
-	//printf("%i\n", execve("test.txt", argv, envp));
-	struct stat susless;
+	nenvp = ft_copy(envp);
 	stat(argv[0], &susless);
 	get_perm(susless, 1);
-	entry_loop(&envp);
-	//char *str;
-	//str = malloc(10000);
-	//int i = 0;
-	//while (i < 9)
-	//{
-	//	str[i] = 48;
-	//	i++;
-	//}
-	//str[i] = 0;
-	//printf("%s\n", str);
-	//free(str);
+	entry_loop(&nenvp);
 	//system("leaks a.out");
 	return (0);
 }
