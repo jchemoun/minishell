@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 12:11:45 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/03 12:31:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -544,9 +544,9 @@ int		into_pipe(t_cmds cmds, char **envp)
 	}
 	else
 	{
+		wait(0);
 		prep_pipe(pipefd[1], pipefd[0], 0);
 		parse_line(cmds.rst, envp);
-		wait(0);
 	}
 	dup2(nstdin, 0);
 	dup2(nstdout, 1);
