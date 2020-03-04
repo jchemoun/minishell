@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 15:31:10 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/04 11:18:46 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,10 +226,11 @@ char		**ft_sort_env(char **fenv)
 void		ft_displayfree(char **fenv)
 {
 	int i;
+
 	i = 0;
 	while(fenv[i])
 	{
-		ft_printf("%s\n", fenv[i]);
+		ft_printf("declare -x %s\n", fenv[i]);
 		i++;
 	}
 	free_tab(fenv);
@@ -324,6 +325,7 @@ void		ft_export(t_cmds cmds, char ***envp)
 	if (cmds.args[0] == 0)
 	{
 		ft_displayfree(ft_sort_env(ft_copy(*envp)));
+		free_cmd(cmds);
 		return ;
 	}
 	while (cmds.args[j])
@@ -336,7 +338,7 @@ void		ft_export(t_cmds cmds, char ***envp)
 			if ((*envp)[i] != 0)
 				(*envp)[i] = cmds.args[j];
 			else
-				(*envp) = push_front_tab(cmds.args[j], (*envp));
+				(*envp) = push_front_tab_free(cmds.args[j], (*envp));
 		}
 		j++;
 	}
@@ -359,7 +361,10 @@ void		ft_unset(t_cmds cmds, char ***envp)
 		while ((*envp)[i + os])
 		{
 			if (cmds.args[j] && !ft_strncmp((*envp)[i + os], cmds.args[j], ft_charat((*envp)[i], '=')))
+			{
+				free((*envp)[i]);
 				os++;
+			}
 			(*envp)[i] = (*envp)[i + os];
 			i++;
 		}
@@ -997,7 +1002,7 @@ void	entry_loop(char ***envp)
 		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
 		//printf("%s\n", line);
-		//system("leaks minishell");
+		system("leaks minishell");
 	}
 	//}
 }
