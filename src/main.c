@@ -6,11 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/04 11:18:46 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/04 15:50:41 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+unsigned char g_ret;
 
 int			ft_isspace(char c)
 {
@@ -132,6 +134,29 @@ char		**push_front_tab_free(char *cp, char **args)
 		re[j + 1] = strdup(args[j]);
 		j++;
 	}
+	re[j + 1] = 0;
+	free_tab(args);
+	return (re);
+}
+
+char		**push_back_tab_free(char *cp, char **args)
+{
+	char	**re;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (args[i])
+		i++;
+	if (!(re = malloc(sizeof(char*) * (i + 2))))
+		return (0);
+	while (j < i)
+	{
+		re[j] = strdup(args[j]);
+		j++;
+	}
+	re[j] = strdup(cp);
 	re[j + 1] = 0;
 	free_tab(args);
 	return (re);
@@ -707,7 +732,8 @@ int		from_file(t_cmds cmds, char ***envp)
 	else
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
+	cmds.rst = rst_cmd.rst ? ft_strdup(rst_cmd.rst) : 0;
+	free(rst_cmd.rst);
 	free_cmd(rst_cmd);
 	return (redir_form_file(cmds, fd, envp));
 }
@@ -738,7 +764,7 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 		i++;
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
-		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY, 0644)) == -1))
+		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644)) == -1))
 		return (ft_printf("permission denied: %s\n", rst_cmd.cmd));
 	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
@@ -748,6 +774,7 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 		rst_cmd.rst = 0;
 	free(cmds.rst);
 	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
+	free(rst_cmd.rst);
 	free_cmd(rst_cmd);
 	return (redir_into_file(cmds, fd, envp));
 }
@@ -846,6 +873,28 @@ char	*get_args(char *line, size_t *i)
 	return (nl);
 }
 
+char	**get_args2(char *line, size_t *i)
+{
+	char	**args;
+	char	*nl;
+
+	if (!(args = malloc(sizeof(char *) * 1)))
+		return (0);
+	args[0] = 0;
+	while (line[*i] && !ft_isinset(line[*i], SEP_SET))
+	{
+		while (line[*i] && ft_isspace(line[*i]))
+			*i = *i + 1;
+		if (line[*i] && !ft_isinset(line[*i], SEP_SET))
+		{
+			nl = get_cmd(line, i);
+			args = push_back_tab_free(nl, args);
+			free(nl);
+		}
+	}
+	return (args);
+}
+
 int		get_sep(char *line, size_t *i)
 {
 	if (line[*i] == 0)
@@ -877,7 +926,8 @@ int		parse_line(char *line, char ***envp)
 	cmds.cmd = get_cmd(line, &i);
 	while (ft_isspace(line[i]))
 		i++;
-	cmds.args = ft_split_free(get_args(line, &i), 7);
+	//cmds.args = ft_split_free(get_args(line, &i), 7);
+	cmds.args = get_args2(line, &i);
 	if ((cmds.sep = get_sep(line, &i)))
 		cmds.rst = ft_strdup(line + i + 1 + (cmds.sep == 5));
 	else
@@ -916,6 +966,34 @@ size_t	find_dol(char *line)
 		i++;
 	}
 	return (-1);
+}
+
+void	rpl_gbl(char **line, size_t i, size_t pdol, char *dol)
+{
+	size_t	j;
+	size_t	k;
+	size_t	len;
+	char	*nl;
+
+	j = 0;
+	k = 0;
+	len = ft_strlen(*line) - pdol + ft_strlen(dol) + 1;
+	if (!(nl = malloc(len)))
+		return ;
+	while (j < len)
+	{
+		if (j < i)
+			nl[j] = *(*line + j);
+		else if (k < ft_strlen(dol))
+			nl[j] = dol[k++];
+		else if ((i + pdol++) < ft_strlen(*line))
+			nl[j] = *((*line) + i + pdol);
+		j++;
+	}
+	nl[j] = 0;
+	free(*line);
+	free(dol);
+	*line = nl;
 }
 
 int		rpl_var(char **line, size_t i, size_t pdol, char *menvj)
@@ -958,8 +1036,8 @@ int		get_var_env(char **line, size_t os, char **menv)
 	while (*(*line + i + pdol + os) &&
 		!ft_isinset(*(*line + i + pdol + os), STOPDOL))
 		pdol++;
-	if (pdol == 0)
-		return (0);
+	if (pdol == 1 && *(*line + i + pdol + os) == '?')
+		rpl_gbl(line, i + os, pdol, ft_itoa(g_ret));
 	if (pdol == 1)
 		return (get_var_env(line, i + 1 + os, menv));
 	j = 0;
@@ -1017,6 +1095,7 @@ int	main(int argc, char **argv, char **envp)
 	nenvp = ft_copy(envp);
 	stat(argv[0], &susless);
 	get_perm(susless, 1);
+	g_ret = 0;
 	entry_loop(&nenvp);
 	//system("leaks a.out");
 	return (0);
