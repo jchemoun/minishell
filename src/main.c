@@ -22,6 +22,39 @@ int			ft_isspace(char c)
 	return (0);
 }
 
+void	ft_werror(char *str, t_cmds cmds, unsigned char rcode)
+{
+	ft_putstr_fd(cmds.cmd, 2);
+	write(2, ": ", 2);
+	ft_putstr_fd(cmds.args, 2);
+	write(2, ": ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd("\n", 2);
+	g_ret = rcode;
+}
+
+
+void	ft_werrornoarg(char *str, t_cmds cmds, unsigned char rcode)
+{
+
+	ft_putstr_fd(cmds.cmd, 2);
+	write(2, ": ", 2);	
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd("\n", 2);
+	g_ret = rcode;
+}
+
+void	ft_werrorfree(char *str, t_cmds cmds, unsigned char rcode)
+{
+	ft_werror(str, cmds, rcode);
+	free_cmd(cmds);
+}
+void	ft_werrornoargfree(char *str, t_cmds cmds, unsigned char rcode)
+{
+	ft_werrornoarg(str, cmds, rcode);
+	free_cmd(cmds);
+}
+
 size_t		ft_charat(const char *str, int c)
 {
 	size_t i;
@@ -310,9 +343,11 @@ void		ft_cd(t_cmds cmds, char ***envp)
 {
 	struct stat buf;
 
+	// if (cmds.args[0] == 0)
+	// 	ft_cdhome()
 	if (stat(cmds.args[0], &buf) == -1)
 	{
-		ft_printf("no such file or directory: %s\n", cmds.cmd);
+		ft_werror("no such file or directory:", cmds, 1);
 		free_cmd(cmds);
 		return ;
 	}
@@ -323,7 +358,7 @@ void		ft_cd(t_cmds cmds, char ***envp)
 	}
 	else
 	{
-		ft_printf("permission denied: %s\n", cmds.cmd);
+		ft_werror("permission denied:", cmds, 111);  //pas teste
 		free_cmd(cmds);
 	}
 }
@@ -335,7 +370,7 @@ void		ft_pwd(t_cmds cmds, char ***envp)
 	free_cmd(cmds);
 	if (!(getcwd(pwd, BUF_S)))
 	{
-		ft_printf("Error in getcwd\n");
+		ft_werrorfree("Error in getcwd:", cmds, 222);  // pas teste
 		return ;
 	}
 	ft_printf("%s\n", pwd);
@@ -420,9 +455,9 @@ void	ft_exit(t_cmds cmds, char ***envp)
 	i = 0;
 	if (cmds.args[0] == 0)
 		exit(0);
-	else if (cmds.args[1] != 0)
+	else if (cmds.args[1] != 0 && ft_isdigit(cmds.args[0][i]))
 	{
-		ft_printf("Too many argument\n");
+		ft_werrornoargfree("too many arguments", cmds, 333);
 		return ;
 	}
 	if (cmds.args[0][i] == '+' || cmds.args[0][i] == '-')
@@ -431,7 +466,7 @@ void	ft_exit(t_cmds cmds, char ***envp)
 		i++;
 	if (cmds.args[0][i] != 0)
 	{
-		ft_printf("Numeric argument required\n");
+		ft_werrorfree("numeric argument required", cmds, 444);
 		return ;
 	}
 	nb = ft_atoi(cmds.args[0]);
@@ -498,7 +533,7 @@ int		check_err(t_cmds cmds)
 {
 	if (cmds.sep > 1 && cmds.rst == 0)
 	{
-		ft_printf("parse error near `\\n'");
+		ft_printf("parse error near `\\n'"); 
 		free_cmd(cmds);
 		return (1);
 	}
@@ -507,7 +542,7 @@ int		check_err(t_cmds cmds)
 
 void	cmd_not_f(t_cmds cmds)
 {
-	ft_printf("command not found: %s\n", cmds.cmd);
+	ft_werrorfree("command not found", cmds, 666);
 	free_cmd(cmds);
 }
 
