@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/04 15:50:41 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/05 11:33:11 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,8 +355,8 @@ void		ft_export(t_cmds cmds, char ***envp)
 	}
 	while (cmds.args[j])
 	{
-		if (ft_charat(cmds.args[j], '=') != (size_t)-1)
-		{
+		//if (ft_charat(cmds.args[j], '=') != (size_t)-1)
+		//{
 			i = 0;
 			while ((*envp)[i] && ft_strncmp((*envp)[i], cmds.args[j], ft_charat((*envp)[i], '=')))
 				i++;
@@ -364,7 +364,7 @@ void		ft_export(t_cmds cmds, char ***envp)
 				(*envp)[i] = cmds.args[j];
 			else
 				(*envp) = push_front_tab_free(cmds.args[j], (*envp));
-		}
+		//}
 		j++;
 	}
 	free_cmd(cmds);
