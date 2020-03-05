@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/03 14:35:14 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/05 14:47:44 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <get_next_line.h>
 
 # define SEP_SET ";|<>\0"
-# define STOPDOL " \"'+;,<>/\\.%&|:$\0"
+# define STOPDOL " \"'+;,<>/\\.%&|:$?\0"
 # define BUF_S 100
 
 typedef struct	s_sig

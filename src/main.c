@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/05 11:33:11 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/05 16:36:42 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-unsigned char g_ret;
+int g_ret;
 
 int			ft_isspace(char c)
 {
@@ -22,19 +22,26 @@ int			ft_isspace(char c)
 	return (0);
 }
 
-void	ft_werror(char *str, t_cmds cmds, unsigned char rcode)
+int		ft_werror(char *str, t_cmds cmds, int rcode)
 {
+	int i;
+
+	i = 0;
 	ft_putstr_fd(cmds.cmd, 2);
 	write(2, ": ", 2);
-	ft_putstr_fd(cmds.args, 2);
+	while (cmds.args[i] && cmds.args[i][0] != 0)
+	{
+		ft_putstr_fd(cmds.args[i], 2);
+		i++;
+	}
 	write(2, ": ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\n", 2);
 	g_ret = rcode;
+	return (1);
 }
 
-
-void	ft_werrornoarg(char *str, t_cmds cmds, unsigned char rcode)
+int		ft_werrornoarg(char *str, t_cmds cmds, int rcode)
 {
 
 	ft_putstr_fd(cmds.cmd, 2);
@@ -42,17 +49,21 @@ void	ft_werrornoarg(char *str, t_cmds cmds, unsigned char rcode)
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\n", 2);
 	g_ret = rcode;
+	return (1);
 }
 
-void	ft_werrorfree(char *str, t_cmds cmds, unsigned char rcode)
+int		ft_werrorfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werror(str, cmds, rcode);
 	free_cmd(cmds);
+	return (1);
 }
-void	ft_werrornoargfree(char *str, t_cmds cmds, unsigned char rcode)
+
+int		ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werrornoarg(str, cmds, rcode);
 	free_cmd(cmds);
+	return (1);
 }
 
 size_t		ft_charat(const char *str, int c)
@@ -71,12 +82,23 @@ size_t		ft_charat(const char *str, int c)
 
 void		signal_callback_handler(int signum)
 {
+	write(1, "\b\b  ", 4);
 	ft_printf("\n> ");
+	g_ret = 1;
 }
 
 void		sign3(int signum)
 {
+	write(0, "\b\b  ", 4);
 	return ;
+}
+
+void		global_change(int signum)
+{
+	if (signum == 3)
+		write(2, "Quit: 3", 7);
+	write(1, "  \n", 3);
+	g_ret = 128 + signum;
 }
 
 int			free_tab(char **args)
@@ -347,7 +369,7 @@ void		ft_cd(t_cmds cmds, char ***envp)
 	// 	ft_cdhome()
 	if (stat(cmds.args[0], &buf) == -1)
 	{
-		ft_werror("no such file or directory:", cmds, 1);
+		ft_werror("no such file or directory:", cmds, 127);
 		free_cmd(cmds);
 		return ;
 	}
@@ -358,7 +380,7 @@ void		ft_cd(t_cmds cmds, char ***envp)
 	}
 	else
 	{
-		ft_werror("permission denied:", cmds, 111);  //pas teste
+		ft_werror("permission denied:", cmds, 126);  //pas teste
 		free_cmd(cmds);
 	}
 }
@@ -370,7 +392,7 @@ void		ft_pwd(t_cmds cmds, char ***envp)
 	free_cmd(cmds);
 	if (!(getcwd(pwd, BUF_S)))
 	{
-		ft_werrorfree("Error in getcwd:", cmds, 222);  // pas teste
+		ft_werrorfree("Error in getcwd:", cmds, 1);  // pas teste
 		return ;
 	}
 	ft_printf("%s\n", pwd);
@@ -457,7 +479,7 @@ void	ft_exit(t_cmds cmds, char ***envp)
 		exit(0);
 	else if (cmds.args[1] != 0 && ft_isdigit(cmds.args[0][i]))
 	{
-		ft_werrornoargfree("too many arguments", cmds, 333);
+		ft_werrornoargfree("too many arguments", cmds, 1);
 		return ;
 	}
 	if (cmds.args[0][i] == '+' || cmds.args[0][i] == '-')
@@ -466,7 +488,7 @@ void	ft_exit(t_cmds cmds, char ***envp)
 		i++;
 	if (cmds.args[0][i] != 0)
 	{
-		ft_werrorfree("numeric argument required", cmds, 444);
+		ft_werrorfree("numeric argument required", cmds, 255);
 		return ;
 	}
 	nb = ft_atoi(cmds.args[0]);
@@ -533,7 +555,8 @@ int		check_err(t_cmds cmds)
 {
 	if (cmds.sep > 1 && cmds.rst == 0)
 	{
-		ft_printf("parse error near `\\n'"); // bonne erreur ?
+		//ft_printf("parse error near `\\n'"); // bonne erreur ?
+		ft_werrornoarg("syntax error near unexpected token `newline'", cmds, 258);
 		free_cmd(cmds);
 		return (1);
 	}
@@ -542,7 +565,7 @@ int		check_err(t_cmds cmds)
 
 void	cmd_not_f(t_cmds cmds)
 {
-	ft_werror("command not found", cmds, 666);
+	ft_werror("command not found", cmds, 127);
 	free_cmd(cmds);
 }
 
@@ -588,7 +611,11 @@ void	simple_exec(t_cmds cmds, char **envp, char *cp)
 		exit(0);
 	}
 	else
+	{
+		signal(2, global_change);
+		signal(3, global_change);
 		wait(0);
+	}
 	if (cmds.cmd != cp)
 		free(cp);
 	free_tab(argv);
@@ -605,6 +632,8 @@ int		get_perm(struct stat buf, int f)
 		stat("./minishell", &min);
 		return (1);
 	}
+	if ((buf.st_mode & S_IFMT) == S_IFDIR)
+		return (2);
 	if (buf.st_uid == min.st_uid && buf.st_mode & 00100)
 		return (1);
 	if (buf.st_uid != min.st_uid &&
@@ -623,6 +652,8 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	char		*nl;
 	int			i;
 
+	if (!cmds.cmd || ft_charat(cmds.cmd, '/') != (size_t)-1)
+		return (0);
 	if (!(paths = ft_split(get_path(envp), ':')))
 		return (0);
 	i = 0;
@@ -640,7 +671,7 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	if (get_perm(buf, 0))
 		return (nl);
 	else if (nl != 0)
-		*j = 0 - !!ft_werrorfree("permission denied:", cmds, 111); //pas teste
+		*j = 0 - !!ft_werrorfree("permission denied:", cmds, 126); //pas teste
 	return (0);
 }
 
@@ -651,19 +682,20 @@ int		isindir(t_cmds cmds, char **envp, int *j)
 
 	if ((i = ft_charat(cmds.cmd, '/')) == -1)
 		return (0);
+	printf("ASDFGHJ\n");
 	if (stat(cmds.cmd, &buf) == -1)
 	{
 		*j = -1;
-		ft_werror("no such file or directory:", cmds, 1); //pas teste
+		ft_werror("no such file or directory:", cmds, 127); //pas teste
 		free_cmd(cmds);
 		return (0);
 	}
-	if (get_perm(buf, 0))
+	if ((i = get_perm(buf, 0)) == 1)
 		return (1);
 	else
 	{
 		*j = -1;
-		ft_werror("permission denied:", cmds, 111);  //pas teste
+		i == 0 ? ft_werror("permission denied:", cmds, 126) : ft_werror("is a directory", cmds, 126);  //pas teste
 		free_cmd(cmds);
 	}
 	return (0);
@@ -759,7 +791,7 @@ int		from_file(t_cmds cmds, char ***envp)
 		i++;
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	if ((fd = open(rst_cmd.cmd, O_RDONLY)) == -1)
-		return (ft_werrorfree("no such file or directory:", cmds, 1)); // pas teste
+		return (ft_werrorfree("no such file or directory:", cmds, 127)); // pas teste
 	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
@@ -800,7 +832,7 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
 		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644)) == -1))
-		return (ft_werror("permission denied:", cmds, 111)); // bonne erreur ?
+		return (ft_werror("permission denied:", cmds, 126)); // bonne erreur ?
 	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
@@ -816,16 +848,21 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 
 void	ft_dispatch(t_cmds cmds, char ***envp)
 {
+	int i;
+
+	i = 0;
 	if (check_err(cmds))
 		return ;
 	if (cmds.sep == 0 || cmds.sep == 1)
 		single_cmd(cmds, envp);
 	if (cmds.sep == 2)
-		into_pipe(cmds, envp);
+		i = into_pipe(cmds, envp);
 	if (cmds.sep == 3)
-		from_file(cmds, envp);
+		i = from_file(cmds, envp);
 	if (cmds.sep == 4 || cmds.sep == 5)
-		into_file(cmds, envp, cmds.sep - 4);
+		i = into_file(cmds, envp, cmds.sep - 4);
+	if (i == 0)
+		g_ret = 0;
 }
 
 int		check_quote(char *line)
@@ -1108,6 +1145,8 @@ void	entry_loop(char ***envp)
 	//{
 	while (!stop)
 	{
+		signal(SIGINT, signal_callback_handler);
+		signal(3, sign3);
 		line = read_line();
 		//parse_input(line, envp);
 		//printf("%s\n", get_var_env(line, envp));
@@ -1115,7 +1154,7 @@ void	entry_loop(char ***envp)
 		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
 		//printf("%s\n", line);
-		system("leaks minishell");
+		//system("leaks minishell");
 	}
 	//}
 }
