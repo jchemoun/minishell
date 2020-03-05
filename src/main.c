@@ -533,7 +533,7 @@ int		check_err(t_cmds cmds)
 {
 	if (cmds.sep > 1 && cmds.rst == 0)
 	{
-		ft_printf("parse error near `\\n'"); 
+		ft_printf("parse error near `\\n'"); // bonne erreur ?
 		free_cmd(cmds);
 		return (1);
 	}
@@ -542,7 +542,7 @@ int		check_err(t_cmds cmds)
 
 void	cmd_not_f(t_cmds cmds)
 {
-	ft_werrorfree("command not found", cmds, 666);
+	ft_werror("command not found", cmds, 666);
 	free_cmd(cmds);
 }
 
@@ -640,7 +640,7 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	if (get_perm(buf, 0))
 		return (nl);
 	else if (nl != 0)
-		*j = 0 - !!ft_printf("permission denied: %s\n", cmds.cmd);
+		*j = 0 - !!ft_werrorfree("permission denied:", cmds, 111); //pas teste
 	return (0);
 }
 
@@ -654,7 +654,7 @@ int		isindir(t_cmds cmds, char **envp, int *j)
 	if (stat(cmds.cmd, &buf) == -1)
 	{
 		*j = -1;
-		ft_printf("no such file or directory: %s\n", cmds.cmd);
+		ft_werror("no such file or directory:", cmds, 1); //pas teste
 		free_cmd(cmds);
 		return (0);
 	}
@@ -663,7 +663,7 @@ int		isindir(t_cmds cmds, char **envp, int *j)
 	else
 	{
 		*j = -1;
-		ft_printf("permission denied: %s\n", cmds.cmd);
+		ft_werror("permission denied:", cmds, 111);  //pas teste
 		free_cmd(cmds);
 	}
 	return (0);
@@ -753,13 +753,13 @@ int		from_file(t_cmds cmds, char ***envp)
 	t_cmds	rst_cmd;
 
 	if (cmds.rst == 0 || cmds.rst[0] == 0)
-		return (ft_printf("parse error near \\n\n"));
+		return (ft_printf("parse error near \\n\n")); //bonne erreur ?
 	i = 0;
 	while (ft_isspace(cmds.rst[i]))
 		i++;
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	if ((fd = open(rst_cmd.cmd, O_RDONLY)) == -1)
-		return (ft_printf("no such file or directory: %s\n", rst_cmd.cmd));
+		return (ft_werrorfree("no such file or directory:", cmds, 1)); // pas teste
 	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
@@ -793,14 +793,14 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 	t_cmds	rst_cmd;
 
 	if (cmds.rst == 0 || cmds.rst[0] == 0)
-		return (ft_printf("parse error near \\n\n"));
+		return (ft_printf("parse error near \\n\n")); // bonne erreur ?
 	i = 0;
 	while (ft_isspace(cmds.rst[i]))
 		i++;
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
 		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644)) == -1))
-		return (ft_printf("permission denied: %s\n", rst_cmd.cmd));
+		return (ft_werror("permission denied:", cmds, 111)); // bonne erreur ?
 	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
