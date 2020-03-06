@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/06 16:16:21 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/06 17:59:54 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int		ft_werrorfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werror(str, cmds, rcode);
 	free_cmd(cmds);
+	g_ret = rcode;
 	return (1);
 }
 
@@ -63,6 +64,7 @@ int		ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werrornoarg(str, cmds, rcode);
 	free_cmd(cmds);
+	g_ret = rcode;
 	return (1);
 }
 
@@ -127,10 +129,11 @@ int		ft_werror_token(t_cmds cmds, int token, int rcode)
 	{
 		ft_putchar_fd('`', 2);
 		ft_putchar_fd((char)token, 2);
-		ft_putstr_fd("\'\n", 2);
 	}
+	ft_putstr_fd("\'\n", 2);
 	free(cmds.rst);
 	free_cmd(cmds);
+	g_ret = rcode;
 	return (1);
 }
 
@@ -166,7 +169,6 @@ void		global_change(int signum)
 	if (signum == 3)
 		write(2, "Quit: 3", 7);
 	write(1, "  \n", 3);
-	g_ret = 128 + signum;
 }
 
 int			free_tab(char **args)
@@ -406,7 +408,7 @@ char		*read_line(void)
 	return (0);
 }
 
-void		ft_echo(t_cmds cmds, char ***envp)
+int		ft_echo(t_cmds cmds, char ***envp)
 {
 	int i;
 	int nl;
@@ -427,46 +429,39 @@ void		ft_echo(t_cmds cmds, char ***envp)
 		ft_printf("\n");
 	free_cmd(cmds);
 	(void)envp;
+	return (0);
 }
 
-void		ft_cd(t_cmds cmds, char ***envp)
+int		ft_cd(t_cmds cmds, char ***envp)
 {
 	struct stat buf;
 
 	// if (cmds.args[0] == 0)
 	// 	ft_cdhome()
 	if (stat(cmds.args[0], &buf) == -1)
-	{
-		ft_werror("no such file or directory:", cmds, 127);
-		free_cmd(cmds);
-		return ;
-	}
+		return (ft_werrorfree("no such file or directory:", cmds, 127));
 	if (get_perm(buf, 0))
 	{
 		chdir(cmds.args[0]);
 		free_cmd(cmds);
 	}
 	else
-	{
-		ft_werror("permission denied:", cmds, 126);  //pas teste
-		free_cmd(cmds);
-	}
+		return (ft_werrorfree("permission denied:", cmds, 126));  //pas teste
+	return (0);
 }
 
-void		ft_pwd(t_cmds cmds, char ***envp)
+int		ft_pwd(t_cmds cmds, char ***envp)
 {
 	char pwd[BUF_S];
 
-	free_cmd(cmds);
 	if (!(getcwd(pwd, BUF_S)))
-	{
-		ft_werrorfree("Error in getcwd:", cmds, 1);  // pas teste
-		return ;
-	}
+		return (ft_werrorfree("Error in getcwd:", cmds, 1));
+	free_cmd(cmds);
 	ft_printf("%s\n", pwd);
+	return (0);
 }
 
-void		ft_export(t_cmds cmds, char ***envp)
+int		ft_export(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 	size_t	j;
@@ -476,33 +471,31 @@ void		ft_export(t_cmds cmds, char ***envp)
 	{
 		ft_displayfree(ft_sort_env(ft_copy(*envp)));
 		free_cmd(cmds);
-		return ;
+		return (0);
 	}
 	while (cmds.args[j])
 	{
-		//if (ft_charat(cmds.args[j], '=') != (size_t)-1)
-		//{
-			i = 0;
-			while ((*envp)[i] && ft_strncmp((*envp)[i], cmds.args[j], ft_charat((*envp)[i], '=')))
-				i++;
-			if ((*envp)[i] != 0)
-				(*envp)[i] = cmds.args[j];
-			else
-				(*envp) = push_front_tab_free(cmds.args[j], (*envp));
-		//}
+		i = 0;
+		while ((*envp)[i] && ft_strncmp((*envp)[i], cmds.args[j], ft_charat((*envp)[i], '=')))
+			i++;
+		if ((*envp)[i] != 0)
+			(*envp)[i] = cmds.args[j];
+		else
+			(*envp) = push_front_tab_free(cmds.args[j], (*envp));
 		j++;
 	}
 	free_cmd(cmds);
+	return (0);
 }
 
-void		ft_unset(t_cmds cmds, char ***envp)
+int		ft_unset(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 	size_t	j;
 	size_t	os;
 
 	if (cmds.args[0] == 0)
-		return ;
+		return (0);
 	j = 0;
 	while (cmds.args[j])
 	{
@@ -522,9 +515,10 @@ void		ft_unset(t_cmds cmds, char ***envp)
 		j++;
 	}
 	free_cmd(cmds);
+	return (0);
 }
 
-void		ft_env(t_cmds cmds, char ***envp)
+int		ft_env(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 
@@ -535,9 +529,10 @@ void		ft_env(t_cmds cmds, char ***envp)
 		ft_printf("%s\n", (*envp)[i]);
 		i++;
 	}
+	return (0);
 }
 
-void	ft_exit(t_cmds cmds, char ***envp)
+int	ft_exit(t_cmds cmds, char ***envp)
 {
 	int nb;
 	int i;
@@ -546,27 +541,21 @@ void	ft_exit(t_cmds cmds, char ***envp)
 	if (cmds.args[0] == 0)
 		exit(0);
 	else if (cmds.args[1] != 0 && ft_isdigit(cmds.args[0][i]))
-	{
-		ft_werrornoargfree("too many arguments", cmds, 1);
-		return ;
-	}
+		return (ft_werrornoargfree("too many arguments", cmds, 1));
 	if (cmds.args[0][i] == '+' || cmds.args[0][i] == '-')
 		i++;
 	while(ft_isdigit(cmds.args[0][i]))
 		i++;
 	if (cmds.args[0][i] != 0)
-	{
-		ft_werrorfree("numeric argument required", cmds, 255);
-		return ;
-	}
+		return (ft_werrorfree("numeric argument required", cmds, 255));
 	nb = ft_atoi(cmds.args[0]);
 	exit((unsigned char)nb);
 }
 
-void		ft_empty_cmd(t_cmds cmds, char ***envp)
+int		ft_empty_cmd(t_cmds cmds, char ***envp)
 {
 	free_cmd(cmds);
-	return ;
+	return (0);
 }
 
 /*
@@ -631,10 +620,11 @@ int		check_err(t_cmds cmds)
 	return (0);
 }
 
-void	cmd_not_f(t_cmds cmds)
+int		cmd_not_f(t_cmds cmds)
 {
 	ft_werror("command not found", cmds, 127);
 	free_cmd(cmds);
+	return (1);
 }
 
 int		is_builtin(char *cmd)
@@ -670,9 +660,10 @@ char	*get_path(char **envp)
 	return (envp[j]);
 }
 
-void	simple_exec(t_cmds cmds, char **envp, char *cp)
+int		simple_exec(t_cmds cmds, char **envp, char *cp)
 {
 	char **argv;
+	int status;
 
 	argv = push_front_tab(cp, cmds.args);
 	if (!fork())
@@ -684,13 +675,15 @@ void	simple_exec(t_cmds cmds, char **envp, char *cp)
 	{
 		signal(2, global_change);
 		signal(3, global_change);
-		wait(0);
+		wait(&status);
+		//printf("Retour de la commande: %d %d\n", WEXITSTATUS(status), W_EXITCODE(WEXITSTATUS(status), status));
 	}
 	if (cmds.cmd != cp)
 		free(cp);
 	free_tab(argv);
 	free_cmd(cmds);
-	return ;
+	g_ret = (WIFSIGNALED(status) ? 128 + W_EXITCODE(WEXITSTATUS(status), status) : W_EXITCODE(WEXITSTATUS(status), status));
+	return (W_EXITCODE(WEXITSTATUS(status), status));
 }
 
 int		get_perm(struct stat buf, int f)
@@ -771,11 +764,12 @@ int		isindir(t_cmds cmds, char **envp, int *j)
 	return (0);
 }
 
-void	single_cmd(t_cmds cmds, char ***envp)
+int		single_cmd(t_cmds cmds, char ***envp)
 {
 	int		i;
+	int		ret;
 	char	*cp;
-	void	(*builtin[8])(t_cmds cmds, char ***envp);
+	int		(*builtin[8])(t_cmds cmds, char ***envp);
 
 	builtin[0] = &ft_echo;
 	builtin[1] = &ft_cd;
@@ -785,16 +779,18 @@ void	single_cmd(t_cmds cmds, char ***envp)
 	builtin[5] = &ft_env;
 	builtin[6] = &ft_exit;
 	builtin[7] = &ft_empty_cmd;
+	ret = 0;
 	if ((i = is_builtin(cmds.cmd)))
-		builtin[i - 1](cmds, envp);
+		ret = builtin[i - 1](cmds, envp);
 	else if ((cp = isinpath(cmds, *envp, &i)))
-		simple_exec(cmds, *envp, cp);
+		ret = simple_exec(cmds, *envp, cp);
 	else if (i != -1 && cp == 0 && isindir(cmds, *envp, &i))
-		simple_exec(cmds, *envp, cmds.cmd);
+		ret = simple_exec(cmds, *envp, cmds.cmd);
 	else if (i != -1)
-		cmd_not_f(cmds);
+		ret = cmd_not_f(cmds);
 	if (cmds.sep == 1)
 		parse_line(cmds.rst, envp);
+	return (ret);
 }
 
 void	prep_pipe(int p1, int p2, int mode)
@@ -938,13 +934,15 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 
 void	ft_dispatch(t_cmds cmds, char ***envp)
 {
-	int i;
+	int	i;
+	int	old_ret;
 
 	i = 0;
+	old_ret = g_ret;
 	if (check_err(cmds))
 		return ;
 	if (cmds.sep == 0 || cmds.sep == 1)
-		single_cmd(cmds, envp);
+		i = single_cmd(cmds, envp);
 	if (cmds.sep == 2)
 		i = into_pipe(cmds, envp);
 	if (cmds.sep == 3)

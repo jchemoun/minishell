@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/06 15:36:00 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/06 17:47:51 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char			**push_front_tab(char *cp, char **args);
 char			**ft_join_tabs(char **t1, char **t2);
 char			*read_line(void);
 char			*get_path(char **envp);
-void			simple_exec(t_cmds cmds, char **envp, char *cp);
+int				simple_exec(t_cmds cmds, char **envp, char *cp);
 int				get_perm(struct stat buf, int f);
 char			*isinpath(t_cmds cmds, char **envp, int *j);
 int				isindir(t_cmds cmds, char **envp, int *j);
@@ -68,16 +68,16 @@ void			entry_loop(char ***envp);
 
 void			ft_dispatch(t_cmds cmds, char ***envp);
 
-void			single_cmd(t_cmds cmds, char ***envp);
+int				single_cmd(t_cmds cmds, char ***envp);
 int				into_pipe(t_cmds cmds, char ***envp);
 int				from_file(t_cmds cmds, char ***envp);
 
 int				is_builtin(char *cmd);
 
-void			ft_echo(t_cmds cmds, char ***envp);
-void			ft_cd(t_cmds cmds, char ***envp);
-void			ft_env(t_cmds cmds, char ***envp);
-void			ft_empty_cmd(t_cmds cmds, char ***envp);
-void			cmd_not_f(t_cmds cmds);
+int				ft_echo(t_cmds cmds, char ***envp);
+int				ft_cd(t_cmds cmds, char ***envp);
+int				ft_env(t_cmds cmds, char ***envp);
+int				ft_empty_cmd(t_cmds cmds, char ***envp);
+int				cmd_not_f(t_cmds cmds);
 
 #endif
