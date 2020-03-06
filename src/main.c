@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/05 16:36:42 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/06 16:16:21 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,74 @@ int		ft_werrorfree(char *str, t_cmds cmds, int rcode)
 int		ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werrornoarg(str, cmds, rcode);
+	free_cmd(cmds);
+	return (1);
+}
+
+int		ft_werror_file(char ***envp, t_cmds cmds, t_cmds rst_cmds, int rcode)
+{
+	if (!cmds.cmd || cmds.cmd[0] == 0)
+		ft_putstr_fd("minishell: ", 2);
+	else
+		ft_putstr_fd(cmds.cmd, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(rst_cmds.cmd, 2);
+	ft_putstr_fd(": Permission denied", 2);
+	ft_putstr_fd("\n", 2);
+	free_cmd(rst_cmds);
+	free(cmds.cmd);
+	free_tab(cmds.args);
+	cmds.cmd = 0;
+	cmds.args = malloc(sizeof(char*));
+	cmds.args[0] = 0;
+	if (cmds.sep)
+		ft_dispatch(cmds, envp);
+	else
+		free_cmd(cmds);
+	g_ret = rcode;
+	return (1);
+}
+
+int		ft_werror_file_from(char ***envp, t_cmds cmds, t_cmds rst_cmds, int rcode)
+{
+	if (!cmds.cmd || cmds.cmd[0] == 0)
+		ft_putstr_fd("minishell: ", 2);
+	else
+		ft_putstr_fd(cmds.cmd, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(rst_cmds.cmd, 2);
+	ft_putstr_fd(": No such file or directory", 2);
+	ft_putstr_fd("\n", 2);
+	free_cmd(rst_cmds);
+	free(cmds.cmd);
+	free_tab(cmds.args);
+	cmds.cmd = 0;
+	cmds.args = malloc(sizeof(char*));
+	cmds.args[0] = 0;
+	if (cmds.sep)
+		ft_dispatch(cmds, envp);
+	else
+		free_cmd(cmds);
+	g_ret = rcode;
+	return (1);
+}
+
+int		ft_werror_token(t_cmds cmds, int token, int rcode)
+{
+	if (!cmds.cmd || cmds.cmd[0] == 0)
+		ft_putstr_fd("minishell: ", 2);
+	else
+		ft_putstr_fd(cmds.cmd, 2);
+	ft_putstr_fd("syntax error near unexpected token ", 2);
+	if (token == 0)
+		ft_putstr_fd("`newline'", 2);
+	else
+	{
+		ft_putchar_fd('`', 2);
+		ft_putchar_fd((char)token, 2);
+		ft_putstr_fd("\'\n", 2);
+	}
+	free(cmds.rst);
 	free_cmd(cmds);
 	return (1);
 }
@@ -571,6 +639,8 @@ void	cmd_not_f(t_cmds cmds)
 
 int		is_builtin(char *cmd)
 {
+	if (!cmd)
+		return (0);
 	if (!ft_strncmp("echo", cmd, 5))
 		return (1);
 	if (!ft_strncmp("cd", cmd, 3))
@@ -771,7 +841,17 @@ int		redir_form_file(t_cmds cmds, int fd, char ***envp)
 
 	nstdin = dup(0);
 	dup2(fd, 0);
-	ft_dispatch(cmds, envp);
+	if (cmds.sep > 2)
+		ft_dispatch(cmds, envp);
+	else
+	{
+		single_cmd(cmds, envp);
+		cmds.cmd = malloc(1);
+		cmds.cmd[0] = 0;
+		cmds.args = malloc(sizeof(char*));
+		cmds.args[0] = 0;
+		ft_dispatch(cmds, envp);
+	}
 	close(fd);
 	dup2(nstdin, 0);
 	close(nstdin);
@@ -784,23 +864,23 @@ int		from_file(t_cmds cmds, char ***envp)
 	int		fd;
 	t_cmds	rst_cmd;
 
-	if (cmds.rst == 0 || cmds.rst[0] == 0)
-		return (ft_printf("parse error near \\n\n")); //bonne erreur ?
 	i = 0;
-	while (ft_isspace(cmds.rst[i]))
+	while (cmds.rst && ft_isspace(cmds.rst[i]))
 		i++;
+	if (cmds.rst == 0 || cmds.rst[i] == 0 || ft_isinset(cmds.rst[i], SEP_SET))
+		return (ft_werror_token(cmds, cmds.rst[i], 258));
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
-	if ((fd = open(rst_cmd.cmd, O_RDONLY)) == -1)
-		return (ft_werrorfree("no such file or directory:", cmds, 127)); // pas teste
-	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
+	rst_cmd.args = get_args2(cmds.rst, &i);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
 		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
 	else
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	cmds.rst = rst_cmd.rst ? ft_strdup(rst_cmd.rst) : 0;
+	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
 	free(rst_cmd.rst);
+	if ((fd = open(rst_cmd.cmd, O_RDONLY)) == -1)
+		return (ft_werror_file_from(envp, cmds, rst_cmd, 1));
 	free_cmd(rst_cmd);
 	return (redir_form_file(cmds, fd, envp));
 }
@@ -811,7 +891,17 @@ int		redir_into_file(t_cmds cmds, int fd, char ***envp)
 
 	nstdout = dup(1);
 	dup2(fd, 1);
-	ft_dispatch(cmds, envp);
+	if (cmds.sep > 2)
+		ft_dispatch(cmds, envp);
+	else
+	{
+		single_cmd(cmds, envp);
+		cmds.cmd = malloc(1);
+		cmds.cmd[0] = 0;
+		cmds.args = malloc(sizeof(char*));
+		cmds.args[0] = 0;
+		ft_dispatch(cmds, envp);
+	}
 	close(fd);
 	dup2(nstdout, 1);
 	close(nstdout);
@@ -824,16 +914,13 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 	int		fd;
 	t_cmds	rst_cmd;
 
-	if (cmds.rst == 0 || cmds.rst[0] == 0)
-		return (ft_printf("parse error near \\n\n")); // bonne erreur ?
 	i = 0;
-	while (ft_isspace(cmds.rst[i]))
+	while (cmds.rst && ft_isspace(cmds.rst[i]))
 		i++;
+	if (cmds.rst == 0 || cmds.rst[i] == 0 || ft_isinset(cmds.rst[i], SEP_SET))
+		return (ft_werror_token(cmds, cmds.rst[i], 258));
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
-	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
-		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644)) == -1))
-		return (ft_werror("permission denied:", cmds, 126)); // bonne erreur ?
-	rst_cmd.args = ft_split_free(get_args(cmds.rst, &i), 7);
+	rst_cmd.args = get_args2(cmds.rst, &i);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	if ((cmds.sep = get_sep(cmds.rst, &i)))
 		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
@@ -842,6 +929,9 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 	free(cmds.rst);
 	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
 	free(rst_cmd.rst);
+	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND, 0644)) == -1) ||
+		(!mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_TRUNC, 0644)) == -1))
+		return (ft_werror_file(envp, cmds, rst_cmd, 1));
 	free_cmd(rst_cmd);
 	return (redir_into_file(cmds, fd, envp));
 }

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/05 14:47:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/06 15:36:00 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int				isindir(t_cmds cmds, char **envp, int *j);
 int				check_quote(char *line);
 char			*get_cmd(char *line, size_t *i);
 char			*get_args(char *line, size_t *i);
+char			**get_args2(char *line, size_t *i);
 int				get_sep(char *line, size_t *i);
 int				parse_line(char *line, char ***envp);
 size_t			find_dol(char *line);
