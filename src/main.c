@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/06 17:59:54 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/09 10:41:46 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,17 +432,71 @@ int		ft_echo(t_cmds cmds, char ***envp)
 	return (0);
 }
 
+void	update_oldpwd(char *arg, char ***envp)
+{
+	int i;
+
+	i = 0;
+	while ((*envp)[i])
+	{
+		if (!ft_strncmp("OLDPWD", (*envp)[i], ft_charat((*envp)[i], '=')))
+		{
+			free((*envp)[i]);
+			(*envp)[i] = ft_strjoin("OLDPWD=", arg + ft_charat(arg, '=') + 1);
+			break;
+		}
+		i++;
+	}
+}
+
+void	update_pwd(char *arg, char ***envp)
+{
+	int i;
+	char pwd[BUF_S];
+
+	i = 0;
+	while ((*envp)[i])
+	{
+		if (!ft_strncmp("PWD", (*envp)[i], ft_charat((*envp)[i], '=')))
+		{
+			update_oldpwd((*envp)[i], envp);
+			free((*envp)[i]);
+			getcwd(pwd, BUF_S);
+			(*envp)[i] = ft_strjoin("PWD=", pwd);
+			break;
+		}
+		i++;
+	}
+}
+
+char	*get_home(char **envp)
+{
+	int	j;
+	j = 0;
+	while (envp[j] && ft_strncmp(envp[j], "HOME", ft_charat(envp[j], '=')))
+		j++;
+	return (envp[j]);
+}
+
 int		ft_cd(t_cmds cmds, char ***envp)
 {
 	struct stat buf;
+	char	*home;
 
-	// if (cmds.args[0] == 0)
-	// 	ft_cdhome()
+	if (cmds.args[0] == 0)
+	{
+		home = get_home(*envp);
+		chdir(home + ft_charat(home, '=') + 1);
+		update_pwd(home + ft_charat(home, '=') + 1, envp);
+		free_cmd(cmds);
+		return 0;
+	}
 	if (stat(cmds.args[0], &buf) == -1)
 		return (ft_werrorfree("no such file or directory:", cmds, 127));
 	if (get_perm(buf, 0))
 	{
 		chdir(cmds.args[0]);
+		update_pwd(cmds.args[0], envp);
 		free_cmd(cmds);
 	}
 	else
