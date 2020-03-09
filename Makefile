@@ -6,8 +6,8 @@ LIBFT				=	libft.a
 WALL				=   yes
 WEXTRA              =   yes
 WERROR              =   yes
-FSANITIZE           =   no
-DEBUG               =   no
+FSANITIZE           =   yes
+DEBUG               =   yes
 O2                  =   no
 CC                  :=  gcc
 GEN                 :=  "Generation in mode"
@@ -96,11 +96,31 @@ LIB_NAME			=	ft_atoi.c 				\
 						ft_lstnew_bonus.c		\
 						ft_lstsize_bonus.c		\
 
-SRC_NAME			=	main.c					\
+SRC_NAME			=	cmd.c					\
+						env_var.c				\
+						frees.c					\
+						from_file.c				\
+						ft_cd.c					\
+						ft_echo.c				\
+						ft_env.c				\
+						ft_exit.c				\
+						ft_export.c				\
+						ft_pwd.c				\
+						ft_unset.c				\
+						ft_werror.c				\
+						get.c					\
+						into_file.c				\
+						into_pipe.c				\
+						main.c					\
+						parse_line.c			\
+						signals.c				\
+						tab_tools.c				\
+						tools.c					\
 
 INCLUDE_NAME		=	libft.h					\
 						get_next_line.h			\
 						ft_printf.h				\
+						minishell.h				\
 
 # Path
 SRC_PATH			=	./src/

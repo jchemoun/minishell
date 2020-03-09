@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/06 17:47:51 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/03/09 12:04:43 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # define SEP_SET ";|<>\0"
 # define STOPDOL " \"'+;,<>/\\.%&|:$?\0"
 # define BUF_S 100
+
+int g_ret;
 
 typedef struct	s_sig
 {
@@ -65,19 +67,45 @@ size_t			find_dol(char *line);
 int				rpl_var(char **line, size_t i, size_t pdol, char *menvj);
 int				get_var_env(char **line, size_t os, char **menv);
 void			entry_loop(char ***envp);
+char			*get_home(char **envp);
+int				check_err(t_cmds cmds);
 
 void			ft_dispatch(t_cmds cmds, char ***envp);
 
 int				single_cmd(t_cmds cmds, char ***envp);
 int				into_pipe(t_cmds cmds, char ***envp);
 int				from_file(t_cmds cmds, char ***envp);
+int				into_file(t_cmds cmds, char ***envp, int mod);
 
 int				is_builtin(char *cmd);
 
 int				ft_echo(t_cmds cmds, char ***envp);
 int				ft_cd(t_cmds cmds, char ***envp);
+int				ft_pwd(t_cmds cmds, char ***envp);
+int				ft_export(t_cmds cmds, char ***envp);
+int				ft_unset(t_cmds cmds, char ***envp);
 int				ft_env(t_cmds cmds, char ***envp);
+int				ft_exit(t_cmds cmds, char ***envp);
 int				ft_empty_cmd(t_cmds cmds, char ***envp);
 int				cmd_not_f(t_cmds cmds);
+
+void			signal_callback_handler(int signum);
+void			sign3(int signum);
+void			global_change(int signum);
+
+int				ft_werror(char *str, t_cmds cmds, int rcode);
+int				ft_werrornoarg(char *str, t_cmds cmds, int rcode);
+int				ft_werror_token(t_cmds cmds, int token, int rcode);
+int				ft_werror_file_from(char ***envp, t_cmds cmds,
+									t_cmds rst_cmds, int rcode);
+int				ft_werrorfree(char *str, t_cmds cmds, int rcode);
+int				ft_werrornoargfree(char *str, t_cmds cmds, int rcode);
+int				ft_werror_file(char ***envp, t_cmds cmds,
+								t_cmds rst_cmds, int rcode);
+
+char			**ft_join_tabs_free1(char **t1, char **t2);
+char			**push_back_tab_free(char *cp, char **args);
+char			**push_front_tab_free(char *cp, char **args);
+char			**ft_copy(char **envp);
 
 #endif
