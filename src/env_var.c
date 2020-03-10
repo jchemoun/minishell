@@ -43,10 +43,10 @@ void	rpl_gbl(char **line, size_t i, size_t pdol, char *dol)
 
 	j = 0;
 	k = 0;
-	len = ft_strlen(*line) - pdol + ft_strlen(dol) + 1;
+	len = ft_strlen(*line) - pdol + ft_strlen(dol) + 2;
 	if (!(nl = malloc(len)))
 		return ;
-	while (j < len)
+	while (j < len - 1)
 	{
 		if (j < i)
 			nl[j] = *(*line + j);

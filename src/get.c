@@ -56,11 +56,19 @@ char	*get_home(char **envp)
 
 int		check_err(t_cmds cmds)
 {
-	if (cmds.sep > 1 && cmds.rst == 0)
+	int i;
+
+	i = 0;
+	if (cmds.sep > 1 && (cmds.rst == 0 || cmds.rst[0] == 0))
 	{
-		ft_werrornoarg("syntax error near unexpected token `newline'",
-			cmds, 258);
-		free_cmd(cmds);
+		ft_werror_token(cmds, cmds.rst[i], 258);
+		return (1);
+	}
+	while (cmds.sep > 0 && cmds.rst[i] == ' ')
+		i++;
+	if (cmds.rst && ft_isinset(cmds.rst[i], SEP_SET))
+	{
+		ft_werror_token(cmds, cmds.rst[i], 258);
 		return (1);
 	}
 	return (0);

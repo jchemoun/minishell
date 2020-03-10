@@ -108,4 +108,7 @@ char			**push_back_tab_free(char *cp, char **args);
 char			**push_front_tab_free(char *cp, char **args);
 char			**ft_copy(char **envp);
 
+int				ft_wertoken(t_cmds cmds, int token, int rcode);
+char			**ft_base_env(void);
+
 #endif

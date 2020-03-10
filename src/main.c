@@ -27,7 +27,7 @@ char		*read_line(void)
 			return (buf);
 		else if (c == 0 && *buf == 0)
 		{
-			ft_printf("exit\n");
+			write(0, "exit\n", 5);
 			exit(0);
 		}
 	}
@@ -97,7 +97,10 @@ int	main(int argc, char **argv, char **envp)
 
 	signal(SIGINT, signal_callback_handler);
 	signal(3, sign3);
-	nenvp = ft_copy(envp);
+	if (!envp[0])
+		nenvp = ft_base_env();
+	else
+		nenvp = ft_copy(envp);
 	stat(argv[0], &susless);
 	get_perm(susless, 1);
 	g_ret = 0;

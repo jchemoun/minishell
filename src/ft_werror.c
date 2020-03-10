@@ -93,10 +93,10 @@ int		ft_werror_file_from(char ***envp, t_cmds cmds,
 int		ft_werror_token(t_cmds cmds, int token, int rcode)
 {
 	if (!cmds.cmd || cmds.cmd[0] == 0)
-		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd("minishell", 2);
 	else
 		ft_putstr_fd(cmds.cmd, 2);
-	ft_putstr_fd("syntax error near unexpected token ", 2);
+	ft_putstr_fd(": syntax error near unexpected token ", 2);
 	if (token == 0)
 		ft_putstr_fd("`newline'", 2);
 	else

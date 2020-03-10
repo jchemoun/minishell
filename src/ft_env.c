@@ -25,3 +25,18 @@ int		ft_env(t_cmds cmds, char ***envp)
 	}
 	return (0);
 }
+
+char	**ft_base_env(void)
+{
+	char **newenv;
+	char	pwd[BUF_S];
+
+	if (!(newenv = malloc(sizeof(char *) * (4))))
+		return (NULL);
+	newenv[0] = ft_strdup("OLDPWD=");
+	getcwd(pwd, BUF_S);
+	newenv[1] = ft_strjoin("PWD=", pwd);
+	newenv[2] = ft_strdup("SHLVL=1");
+	newenv[3] = 0;
+	return (newenv);
+}
