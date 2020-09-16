@@ -34,13 +34,11 @@ char		*read_line(void)
 	return (0);
 }
 
-void	ft_dispatch(t_cmds cmds, char ***envp)
+void		ft_dispatch(t_cmds cmds, char ***envp)
 {
 	int	i;
-	int	old_ret;
 
 	i = 0;
-	old_ret = g_ret;
 	if (check_err(cmds))
 		return ;
 	if (cmds.sep == 0 || cmds.sep == 1)
@@ -55,45 +53,26 @@ void	ft_dispatch(t_cmds cmds, char ***envp)
 		g_ret = 0;
 }
 
-void	entry_loop(char ***envp)
+void		entry_loop(char ***envp)
 {
 	char	*line;
 	int		stop;
-	//pid_t	pid;
 
 	stop = 0;
-	//if ((pid = fork()) < 0)
-	//{
-	//	ft_printf("Fork_Error\n");
-	//	exit(1);
-	//}
-	//else if (pid > 0)
-	//{
-	//	//signal(2, signal_callback_handler);
-	//	waitpid(pid, NULL, 0);
-	//}
-	//else
-	//{
 	while (!stop)
 	{
 		signal(SIGINT, signal_callback_handler);
 		signal(3, sign3);
 		line = read_line();
-		//parse_input(line, envp);
-		//printf("%s\n", get_var_env(line, envp));
 		get_var_env(&line, 0, *envp);
-		//printf("POSTVAR :%s\n", line);
 		stop = parse_line(line, envp);
-		//printf("%s\n", line);
-		//system("leaks minishell");
 	}
-	//}
 }
 
-int	main(int argc, char **argv, char **envp)
+int			main(int argc, char **argv, char **envp)
 {
-	char **nenvp;
-	struct stat susless;
+	char		**nenvp;
+	struct stat	susless;
 
 	signal(SIGINT, signal_callback_handler);
 	signal(3, sign3);
@@ -105,7 +84,6 @@ int	main(int argc, char **argv, char **envp)
 	get_perm(susless, 1);
 	g_ret = 0;
 	entry_loop(&nenvp);
-	//system("leaks a.out");
 	return (0);
 	(void)argc;
 }

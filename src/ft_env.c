@@ -28,7 +28,7 @@ int		ft_env(t_cmds cmds, char ***envp)
 
 char	**ft_base_env(void)
 {
-	char **newenv;
+	char	**newenv;
 	char	pwd[BUF_S];
 
 	if (!(newenv = malloc(sizeof(char *) * (4))))

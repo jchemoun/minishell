@@ -37,7 +37,7 @@ char		*ft_strtrim(const char *s1, const char *set)
 	len = ft_strlen(s1) - 1;
 	while (len > 0 && ft_found(s1[len], set))
 		len--;
-	if (s1 == '\0')
+	if (*s1 == '\0')
 		return (ft_calloc(1, sizeof(char)));
 	return (ft_substr(s1, 0, len + 1));
 }
