@@ -12,56 +12,6 @@
 
 #include <minishell.h>
 
-int		ft_nbl(char **envp)
-{
-	int i;
-
-	i = 0;
-	while (envp[i])
-		i++;
-	return (i);
-}
-
-char	**ft_copy(char **envp)
-{
-	char	**fenv;
-	int		i;
-
-	if (!(fenv = malloc(sizeof(char *) * (ft_nbl(envp) + 1))))
-		return (NULL);
-	i = 0;
-	while (envp[i])
-	{
-		fenv[i] = ft_strdup(envp[i]);
-		i++;
-	}
-	fenv[i] = 0;
-	return (fenv);
-}
-
-char	**ft_sort_env(char **fenv)
-{
-	int		i;
-	char	*tmp;
-
-	i = 0;
-	while (fenv[i + 1])
-	{
-		if (ft_strncmp(fenv[i], fenv[i + 1], ft_charat(fenv[i], '=') >
-			ft_charat(fenv[i + 1], '=') ? ft_charat(fenv[i], '=') :
-			ft_charat(fenv[i + 1], '=')) > 0)
-		{
-			tmp = fenv[i];
-			fenv[i] = fenv[i + 1];
-			fenv[i + 1] = tmp;
-			i = 0;
-		}
-		else
-			i++;
-	}
-	return (fenv);
-}
-
 void	ft_displayfree(char **fenv)
 {
 	int i;
@@ -75,12 +25,64 @@ void	ft_displayfree(char **fenv)
 	free_tab(fenv);
 }
 
+int		err_id_var(char *arg)
+{
+	ft_putstr_fd("minishell: export: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(" : identifiant non valable\n", 2);
+	g_ret = 1;
+	return (1);
+}
+
+int		check_var(char *arg)
+{
+	int i;
+
+	i = 0;
+	if (arg[0] > 47 && arg[0] < 58)
+		return (0);
+	while (arg[i])
+	{
+		if (!ft_isalnum(arg[i]) && (arg[i] != '=' && i != 0))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	ft_export_if(char *arg, char ***envp)
+{
+	int	i;
+	int	eg[2];
+	int	found;
+
+	i = 0;
+	eg[0] = ((int)ft_charat(arg, '=') == -1 ?
+		(int)ft_strlen(arg) : (int)ft_charat(arg, '='));
+	found = 0;
+	while ((*envp)[i])
+	{
+		eg[1] = ft_charat((*envp)[i], '=');
+		if (!ft_strncmp((*envp)[i], arg, eg[0]) &&
+			eg[0] == (eg[1] == -1 ? (int)ft_strlen((*envp)[i]) : eg[1]))
+		{
+			found = 1;
+			if (eg[0] != (int)ft_strlen(arg))
+				replace_free_intab(envp, arg, i);
+		}
+		i++;
+	}
+	if (found == 0)
+		(*envp) = push_front_tab_free(arg, (*envp));
+}
+
 int		ft_export(t_cmds cmds, char ***envp)
 {
-	size_t	i;
 	size_t	j;
+	int		ret;
 
 	j = 0;
+	ret = 0;
 	if (cmds.args[0] == 0)
 	{
 		ft_displayfree(ft_sort_env(ft_copy(*envp)));
@@ -89,16 +91,12 @@ int		ft_export(t_cmds cmds, char ***envp)
 	}
 	while (cmds.args[j])
 	{
-		i = 0;
-		while ((*envp)[i] &&
-			ft_strncmp((*envp)[i], cmds.args[j], ft_charat((*envp)[i], '=')))
-			i++;
-		if ((*envp)[i] != 0)
-			(*envp)[i] = cmds.args[j];
+		if (check_var(cmds.args[j]))
+			ft_export_if(cmds.args[j], envp);
 		else
-			(*envp) = push_front_tab_free(cmds.args[j], (*envp));
+			ret = err_id_var(cmds.args[j]);
 		j++;
 	}
 	free_cmd(cmds);
-	return (0);
+	return (ret);
 }

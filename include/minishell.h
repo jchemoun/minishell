@@ -108,6 +108,10 @@ char			**ft_join_tabs_free1(char **t1, char **t2);
 char			**push_back_tab_free(char *cp, char **args);
 char			**push_front_tab_free(char *cp, char **args);
 char			**ft_copy(char **envp);
+void			replace_free_intab(char ***tab, char *src, int pos);
+int				ft_nbl(char **envp);
+char			**ft_copy(char **envp);
+char			**ft_sort_env(char **fenv);
 
 int				ft_wertoken(t_cmds cmds, int token, int rcode);
 char			**ft_base_env(void);

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:47 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 12:12:45 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/09/16 17:28:13 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int		into_pipe(t_cmds cmds, char ***envp)
 	else
 		refork(pipefd, cmds.rst, envp);
 	ft_dupdup(inout[0], inout[1]);
+	free(cmds.rst);
 	free_cmd(cmds);
 	return (0);
 }
