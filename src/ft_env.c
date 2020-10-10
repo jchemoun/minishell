@@ -20,7 +20,8 @@ int		ft_env(t_cmds cmds, char ***envp)
 	free_cmd(cmds);
 	while ((*envp)[i])
 	{
-		ft_printf("%s\n", (*envp)[i]);
+		if ((int)ft_charat((*envp)[i], '=') != -1)
+			ft_printf("%s\n", (*envp)[i]);
 		i++;
 	}
 	return (0);
