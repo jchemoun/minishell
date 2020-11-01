@@ -54,10 +54,11 @@ int		ft_werror_file(char ***envp, t_cmds cmds, t_cmds rst_cmds, int rcode)
 	free_cmd(rst_cmds);
 	free(cmds.cmd);
 	free_tab(cmds.args);
-	cmds.cmd = 0;
+	cmds.cmd = malloc(1);
+	cmds.cmd[0] = 0;
 	cmds.args = malloc(sizeof(char*));
 	cmds.args[0] = 0;
-	if (cmds.sep)
+	if (cmds.sep < 3)
 		ft_dispatch(cmds, envp);
 	else
 		free_cmd(cmds);
@@ -68,6 +69,7 @@ int		ft_werror_file(char ***envp, t_cmds cmds, t_cmds rst_cmds, int rcode)
 int		ft_werror_file_from(char ***envp, t_cmds cmds,
 								t_cmds rst_cmds, int rcode)
 {
+	g_ret = (cmds.sep == 1) ? rcode : g_ret;
 	if (!cmds.cmd || cmds.cmd[0] == 0)
 		ft_putstr_fd("minishell: ", 2);
 	else
@@ -79,14 +81,15 @@ int		ft_werror_file_from(char ***envp, t_cmds cmds,
 	free_cmd(rst_cmds);
 	free(cmds.cmd);
 	free_tab(cmds.args);
-	cmds.cmd = 0;
+	cmds.cmd = malloc(1);
+	cmds.cmd[0] = 0;
 	cmds.args = malloc(sizeof(char*));
 	cmds.args[0] = 0;
-	if (cmds.sep)
+	if (cmds.sep < 3)
 		ft_dispatch(cmds, envp);
 	else
 		free_cmd(cmds);
-	g_ret = rcode;
+	g_ret = (cmds.sep != 1) ? rcode : g_ret;
 	return (1);
 }
 

@@ -110,6 +110,7 @@ int		parse_line(char *line, char ***envp)
 	t_cmds	cmds;
 	size_t	i;
 
+	var_env_ligne(&line, envp);
 	i = 0;
 	while (ft_isspace(line[i]))
 		i++;

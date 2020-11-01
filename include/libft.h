@@ -60,6 +60,7 @@ char			**ft_split(char const *s, char c);
 char			**ft_split_free(char *s, char c);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *s1);
+char			*ft_strdnup(char const *s, int c);
 char			*ft_strjoin(char const *s1, char const *s2);
 
 size_t			ft_strlcat(char *dst, const char *src, size_t dstsize);
@@ -75,6 +76,14 @@ char			*ft_strnstr(const char *haystack,
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strtrim(char const *s1, char const *set);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
+
+char			**ft_join_tabs_free1(char **t1, char **t2);
+char			**ft_join_tabs(char **t1, char **t2);
+char			**push_back_tab_free(char *cp, char **args);
+char			**push_front_tab_free(char *cp, char **args);
+char			**push_front_tab_free2(char *cp, char **args);
+char			**push_front_tab(char *cp, char **args);
+int				free_tab(char **args);
 
 int				ft_tolower(int c);
 int				ft_toupper(int c);

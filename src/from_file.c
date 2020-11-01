@@ -45,7 +45,7 @@ int		from_file(t_cmds cmds, char ***envp)
 	while (cmds.rst && ft_isspace(cmds.rst[i]))
 		i++;
 	if (cmds.rst == 0 || cmds.rst[i] == 0 || ft_isinset(cmds.rst[i], SEP_SET))
-		return (ft_werror_token(cmds, cmds.rst[i], 258));
+		return (ft_werror_token(cmds, cmds.rst[i], 2));
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	rst_cmd.args = get_args2(cmds.rst, &i);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);

@@ -77,6 +77,8 @@ LIB_NAME			=	ft_atoi.c 				\
 						ft_tolower.c			\
 						ft_toupper.c			\
 						ft_isinset.c			\
+						ft_join_tab.c			\
+						ft_push_tab.c			\
 						ft_macro.c				\
 						ft_print_nbr.c			\
 						ft_print_unbr.c			\
@@ -115,7 +117,6 @@ SRC_NAME			=	cmd.c					\
 						main.c					\
 						parse_line.c			\
 						signals.c				\
-						tab_tools.c				\
 						tools.c					\
 
 INCLUDE_NAME		=	libft.h					\

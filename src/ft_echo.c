@@ -12,16 +12,32 @@
 
 #include <minishell.h>
 
+int		is_opt_n(char *arg)
+{
+	int i;
+
+	i = 0;
+	if (arg[i] != '-')
+		return (0);
+	i++;
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int		ft_echo(t_cmds cmds, char ***envp)
 {
 	int	i;
 	int	nl;
 
 	i = 0;
-	if (cmds.args[0])
-		nl = 1 - !!(ft_strncmp("-n", cmds.args[i], 3));
-	else
-		nl = 0;
+	nl = 0;
+	while (cmds.args[nl] && (is_opt_n(cmds.args[nl])))
+		nl++;
 	while (cmds.args[i + nl])
 	{
 		ft_printf("%s", cmds.args[i + nl]);

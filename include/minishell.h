@@ -47,11 +47,8 @@ typedef struct	s_cmds
 
 int				ft_isspace(char c);
 size_t			ft_charat(const char *str, int c);
-int				free_tab(char **args);
 void			free_cmd(t_cmds cmds);
 char			*ft_strjoinfree2(const char *s1, const char *s2);
-char			**push_front_tab(char *cp, char **args);
-char			**ft_join_tabs(char **t1, char **t2);
 char			*read_line(void);
 char			*get_path(char **envp);
 int				simple_exec(t_cmds cmds, char **envp, char *cp);
@@ -67,6 +64,7 @@ int				parse_line(char *line, char ***envp);
 size_t			find_dol(char *line);
 int				rpl_var(char **line, size_t i, size_t pdol, char *menvj);
 int				get_var_env(char **line, size_t os, char **menv);
+void			var_env_ligne(char **line, char ***envp);
 void			entry_loop(char ***envp);
 char			*get_home(char **envp);
 int				check_err(t_cmds cmds);
@@ -104,14 +102,12 @@ int				ft_werrornoargfree(char *str, t_cmds cmds, int rcode);
 int				ft_werror_file(char ***envp, t_cmds cmds,
 								t_cmds rst_cmds, int rcode);
 
-char			**ft_join_tabs_free1(char **t1, char **t2);
-char			**push_back_tab_free(char *cp, char **args);
-char			**push_front_tab_free(char *cp, char **args);
 char			**ft_copy(char **envp);
 void			replace_free_intab(char ***tab, char *src, int pos);
 int				ft_nbl(char **envp);
 char			**ft_copy(char **envp);
 char			**ft_sort_env(char **fenv);
+char			*add_egg(char *arg);
 
 int				ft_wertoken(t_cmds cmds, int token, int rcode);
 char			**ft_base_env(void);

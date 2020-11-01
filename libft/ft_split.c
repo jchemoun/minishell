@@ -41,7 +41,7 @@ static int		ft_countw(char const *s, char c)
 	return (re);
 }
 
-static	char	*ft_strdnup(char const *s, int c)
+char			*ft_strdnup(char const *s, int c)
 {
 	int		i;
 	int		len;

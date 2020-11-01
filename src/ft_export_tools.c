@@ -28,6 +28,26 @@ int		ft_nbl(char **envp)
 	return (i);
 }
 
+char	*add_egg(char *arg)
+{
+	char	*argegg;
+	int		egg;
+	int		i;
+
+	i = 0;
+	egg = ft_charat(arg, '=');
+	argegg = malloc(ft_strlen(arg) + 1 + (egg == -1));
+	while ((arg)[i])
+	{
+		argegg[i] = (arg)[i];
+		i++;
+	}
+	if (egg == -1)
+		argegg[i++] = '=';
+	argegg[i] = '\0';
+	return (argegg);
+}
+
 char	**ft_copy(char **envp)
 {
 	char	**fenv;

@@ -64,7 +64,6 @@ void		entry_loop(char ***envp)
 		signal(SIGINT, signal_callback_handler);
 		signal(3, sign3);
 		line = read_line();
-		get_var_env(&line, 0, *envp);
 		stop = parse_line(line, envp);
 	}
 }

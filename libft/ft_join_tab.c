@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tab_tools.c                                        :+:      :+:    :+:   */
+/*   ft_join_tab.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,75 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
-
-char		**push_front_tab(char *cp, char **args)
-{
-	char	**re;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	while (args[i])
-		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
-		return (0);
-	re[0] = strdup(cp);
-	while (j < i)
-	{
-		re[j + 1] = strdup(args[j]);
-		j++;
-	}
-	re[j + 1] = 0;
-	return (re);
-}
-
-char		**push_front_tab_free(char *cp, char **args)
-{
-	char	**re;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	while (args[i])
-		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
-		return (0);
-	re[0] = strdup(cp);
-	while (j < i)
-	{
-		re[j + 1] = strdup(args[j]);
-		j++;
-	}
-	re[j + 1] = 0;
-	free_tab(args);
-	return (re);
-}
-
-char		**push_back_tab_free(char *cp, char **args)
-{
-	char	**re;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	while (args[i])
-		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
-		return (0);
-	while (j < i)
-	{
-		re[j] = strdup(args[j]);
-		j++;
-	}
-	re[j] = strdup(cp);
-	re[j + 1] = 0;
-	free_tab(args);
-	return (re);
-}
+#include <libft.h>
 
 char		**ft_join_tabs(char **t1, char **t2)
 {

@@ -12,21 +12,6 @@
 
 #include <minishell.h>
 
-int		free_tab(char **args)
-{
-	int i;
-
-	i = 0;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args[i]);
-	free(args);
-	return (1);
-}
-
 void	free_cmd(t_cmds cmds)
 {
 	free(cmds.cmd);

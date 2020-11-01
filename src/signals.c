@@ -23,7 +23,7 @@ void		signal_callback_handler(int signum)
 void		sign3(int signum)
 {
 	(void)signum;
-	write(0, "\b\b  ", 4);
+	write(1, "\b\b  \b\b", 6);
 	return ;
 }
 

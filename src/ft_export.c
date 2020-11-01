@@ -19,7 +19,7 @@ void	ft_displayfree(char **fenv)
 	i = 0;
 	while (fenv[i])
 	{
-		ft_printf("declare -x %s\n", fenv[i]);
+		ft_printf("%s\n", fenv[i]);
 		i++;
 	}
 	free_tab(fenv);
@@ -41,7 +41,7 @@ int		check_var(char *arg)
 	i = 0;
 	if (arg[0] > 47 && arg[0] < 58)
 		return (0);
-	while (arg[i])
+	while (arg[i] && arg[i] != '=')
 	{
 		if (!ft_isalnum(arg[i]) && (arg[i] != '=' && i != 0))
 			return (0);
@@ -73,7 +73,9 @@ void	ft_export_if(char *arg, char ***envp)
 		i++;
 	}
 	if (found == 0)
-		(*envp) = push_front_tab_free(arg, (*envp));
+	{
+		(*envp) = push_front_tab_free2(add_egg(arg), (*envp));
+	}
 }
 
 int		ft_export(t_cmds cmds, char ***envp)

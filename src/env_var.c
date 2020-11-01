@@ -116,3 +116,28 @@ int		get_var_env(char **line, size_t os, char **menv)
 		return (0);
 	return (get_var_env(line, os, menv));
 }
+
+void	var_env_ligne(char **line, char ***envp)
+{
+	int		stp;
+	char	*l2;
+	char	*l3;
+
+	stp = ft_charat(*line, ';');
+	if (stp != -1)
+	{
+		l2 = ft_strdnup(*line, ';');
+		l3 = ft_strdnup(*line + stp, 99999);
+	}
+	else
+	{
+		l2 = ft_strdup(*line);
+		l3 = malloc(1);
+		l3[0] = 0;
+	}
+	get_var_env(&l2, 0, *envp);
+	free(*line);
+	*line = ft_strjoin(l2, l3);
+	free(l2);
+	free(l3);
+}
