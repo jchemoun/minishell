@@ -100,6 +100,8 @@ LIB_NAME			=	ft_atoi.c 				\
 
 SRC_NAME			=	cmd.c					\
 						env_var.c				\
+						rpl_bs.c				\
+						rpl_bs2.c				\
 						frees.c					\
 						from_file.c				\
 						ft_cd.c					\

@@ -1,35 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   rpl_bs2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/09 10:57:42 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 16:35:53 by user42           ###   ########.fr       */
+/*   Created: 2020/11/02 14:43:28 by user42            #+#    #+#             */
+/*   Updated: 2020/11/02 15:09:00 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void		signal_callback_handler(int signum)
+void	rpl_bs_inl(char *line)
 {
-	(void)signum;
-	write(1, "\b\b  ", 4);
-	ft_printf("\n> ");
-	g_ret = 1;
+	int i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == 1)
+			line[i] = '\'';
+		else if (line[i] == 2)
+			line[i] = '"';
+		else if (line[i] == 3)
+			line[i] = '\\';
+		else if (line[i] == 4)
+			line[i] = '$';
+		i++;
+	}
 }
 
-void		sign3(int signum)
+void	rpl_bs_cmds(t_cmds cmds)
 {
-	(void)signum;
-	write(1, "\b\b  \b\b", 6);
-	return ;
-}
+	int i;
 
-void		global_change(int signum)
-{
-	if (signum == 3)
-		write(2, "Quit: 3", 7);
-	write(1, "  \n", 3);
+	i = 0;
+	rpl_bs_inl(cmds.cmd);
+	while (cmds.args[i])
+	{
+		rpl_bs_inl(cmds.args[i]);
+		i++;
+	}
 }

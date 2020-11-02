@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 12:04:43 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/11/02 14:50:30 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,8 @@ char			*add_egg(char *arg);
 
 int				ft_wertoken(t_cmds cmds, int token, int rcode);
 char			**ft_base_env(void);
+
+void			rpl_bs_ligne(char **line);
+void			rpl_bs_cmds(t_cmds cmds);
 
 #endif
