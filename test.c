@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jchemoun <jchemoun@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/31 17:09:32 by jchemoun            #+#    #+#             */
-/*   Updated: 2021/03/31 17:09:34 by jchemoun           ###   ########.fr       */
+/*   Created: 2021/03/31 17:09:32 by jchemoun          #+#    #+#             */
+/*   Updated: 2021/03/31 17:25:19 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	disable_rawmode(void)
 void	get_char(char *c, char **buf)
 {
 	read(1, c, 1);
+	/* todo : get termcaps and change buf to history */
 }
 
 void	ft_append(char **buf, char c)
@@ -93,6 +94,13 @@ void	ft_deappend(char **buf)
 	write(1, "\b \b", 3);
 }
 
+void	crtl_d_exit(void)
+{
+	disable_rawmode();
+	write(1, "exit\n", 5);
+	exit(0);
+}
+
 char	*read_linev2(void)
 {
 	char	*buf;
@@ -103,21 +111,20 @@ char	*read_linev2(void)
 	{
 		get_char(&c, &buf);
 		if (c == 10)
-			return (buf);
-		else if (c == 4)
 		{
-			if (*buf == 0)
-			{
-				disable_rawmode();
-				write(1, "exit\n", 5);
-				exit(0);
-			}
+			write(1, "\n", 1);
+			return (buf);
 		}
+		else if (c == 3)
+			crtl_c_buf(&buf);
+		else if (c == 4 && *buf == 0)
+			crtl_d_exit();
 		else if (c == 127)
 			ft_deappend(&buf);
 		else if (c != 0 && c != 2 && c != 3 && c != 4)
 			ft_append(&buf, c);
 	}
+	/* todo : convert all != into isprintable */
 	return (0);
 }
 
@@ -153,4 +160,5 @@ int	main(void)
 	free(line);
 	disable_rawmode();
 	return (0);
+	/* todo : make history liste chainé */
 }
