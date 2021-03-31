@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_var.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:46:37 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 10:47:02 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/11/02 15:09:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ void	var_env_ligne(char **line, char ***envp)
 		l3 = malloc(1);
 		l3[0] = 0;
 	}
+	rpl_bs_ligne(&l2);
 	get_var_env(&l2, 0, *envp);
 	free(*line);
 	*line = ft_strjoin(l2, l3);

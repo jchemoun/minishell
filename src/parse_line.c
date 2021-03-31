@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:47:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:48:02 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/11/02 16:41:40 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,10 @@ int		parse_line(char *line, char ***envp)
 	while (ft_isspace(line[i]))
 		i++;
 	cmds.args = get_args2(line, &i);
-	if ((cmds.sep = get_sep(line, &i)))
-		cmds.rst = ft_strdup(line + i + 1 + (cmds.sep == 5));
-	else
-		cmds.rst = 0;
+	cmds.sep = get_sep(line, &i);
+	cmds.rst = cmds.sep ? ft_strdup(line + i + 1 + (cmds.sep == 5)) : 0;
 	free(line);
+	rpl_bs_cmds(cmds);
 	ft_dispatch(cmds, envp);
 	return (0);
 }
