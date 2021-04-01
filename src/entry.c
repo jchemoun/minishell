@@ -1,49 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   entry.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 17:09:32 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/03/31 17:25:19 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/01 20:02:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <curses.h>
-#include <term.h>
-#include <termios.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
+#include <minishell.h>
 
-void	enable_rawmode(void)
+void	get_char(char *c, char **buf, t_historia_dc **historia)
 {
-	struct termios	raw;
+	char	termc[2];
 
-	tcgetattr(1, &raw);
-	printf("LFLAG : %i\n", raw.c_lflag);
-	raw.c_lflag &= ~(ECHO | ICANON);
-	printf("LFLAG : %i\n", raw.c_lflag);
-	printf("CCC VMIN : %i\nCCC VTIME : %i\n", raw.c_cc[VMIN], raw.c_cc[VTIME]);
-	//raw.c_cc[VMIN] = 0;
-	//raw.c_cc[VTIME] = 1;
-	tcsetattr(1, TCSAFLUSH, &raw);
-}
-
-void	disable_rawmode(void)
-{
-	struct termios	deraw;
-
-	tcgetattr(1, &deraw);
-	deraw.c_lflag = 35387;
-	tcsetattr(1, TCSAFLUSH, &deraw);
-}
-
-void	get_char(char *c, char **buf)
-{
-	read(1, c, 1);
+	while (read(0, c, 1) != 1)
+		;
+	if (*c == '\e')
+	{
+		read(0, &termc[0], 1);
+		if (termc[0] == '[')
+		{
+			read(0, &termc[1], 1);
+			if (termc[1] == 65)
+				arrow_up(buf, historia);
+			else if (termc[1] == 66)
+				arrow_down(buf, historia);
+			else if (termc[1] == 67)
+				arrow_lr(buf);
+			else if (termc[1] == 68)
+				arrow_lr(buf);
+		}
+	}
+	return ;
 	/* todo : get termcaps and change buf to history */
 }
 
@@ -94,22 +85,16 @@ void	ft_deappend(char **buf)
 	write(1, "\b \b", 3);
 }
 
-void	crtl_d_exit(void)
-{
-	disable_rawmode();
-	write(1, "exit\n", 5);
-	exit(0);
-}
-
-char	*read_linev2(void)
+char	*read_linev2(t_historia_dc **historia)
 {
 	char	*buf;
 	char	c;
 
-	buf = calloc(1, 1);
+	buf = ft_calloc(1, 1);
+	ft_printf("> ");
 	while (1)
 	{
-		get_char(&c, &buf);
+		get_char(&c, &buf, historia);
 		if (c == 10)
 		{
 			write(1, "\n", 1);
@@ -121,13 +106,12 @@ char	*read_linev2(void)
 			crtl_d_exit();
 		else if (c == 127)
 			ft_deappend(&buf);
-		else if (c != 0 && c != 2 && c != 3 && c != 4)
+		else if (ft_isprint(c))
 			ft_append(&buf, c);
 	}
-	/* todo : convert all != into isprintable */
 	return (0);
 }
-
+/*
 void	crtl_bs(int signum)
 {
 	char	c;
@@ -160,5 +144,6 @@ int	main(void)
 	free(line);
 	disable_rawmode();
 	return (0);
-	/* todo : make history liste chainé */
+	/* todo : make history liste chainé
 }
+*/

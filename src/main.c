@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 16:33:17 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/01 19:59:15 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,22 @@ void		ft_dispatch(t_cmds cmds, char ***envp)
 
 void		entry_loop(char ***envp)
 {
-	char	*line;
-	int		stop;
+	char			*line;
+	int				stop;
+	t_historia_dc	*historia;
 
 	stop = 0;
+	historia = malloc(sizeof(t_historia_dc));
+	if (!historia)
+		proper_exit(1, 1);
+	historia->prev = 0;
+	historia->next = 0;
 	while (!stop)
 	{
 		signal(SIGINT, signal_callback_handler);
 		signal(3, sign3);
-		line = read_line();
+		line = read_linev2(&historia);
+		
 		stop = parse_line(line, envp);
 	}
 }
@@ -82,6 +89,7 @@ int			main(int argc, char **argv, char **envp)
 	stat(argv[0], &susless);
 	get_perm(susless, 1);
 	g_ret = 0;
+	enable_rawmode();
 	entry_loop(&nenvp);
 	return (0);
 	(void)argc;

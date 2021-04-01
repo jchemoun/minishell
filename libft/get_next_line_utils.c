@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 14:28:13 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/13 13:16:37 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/01 17:32:15 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,14 @@ char	*ft_realloc(char *str, int len, int size)
 	return (new);
 }
 
-void	ft_tabinit(int tab[5])
+void	ft_tabinit(int tabb[5])
 {
 	int i;
 
 	i = 0;
 	while (i < 5)
 	{
-		tab[i] = 0;
+		tabb[i] = 0;
 		i++;
 	}
 }

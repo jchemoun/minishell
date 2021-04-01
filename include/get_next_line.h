@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 14:28:49 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/13 13:16:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/01 17:32:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 char	*ft_init(int *found);
 int		ft_foundn(char *str, int size, int *found);
 char	*ft_realloc(char *str, int len, int size);
-void	ft_tabinit(int tab[5]);
+void	ft_tabinit(int tabb[5]);
 int		ft_fill(char **stc, char **line, char **buf, int size);
 int		ft_empty(char **stc, char **line);
 int		get_next_line(int fd, char **line);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:57:42 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 16:35:53 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/01 18:38:03 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,21 @@
 
 void		signal_callback_handler(int signum)
 {
-	(void)signum;
-	write(1, "\b\b  ", 4);
-	ft_printf("\n> ");
+	char	c;
+
+	c = signum;
+	write(1, &c, 1);
+	write(1, "\b \b", 3);
 	g_ret = 1;
 }
 
 void		sign3(int signum)
 {
-	(void)signum;
-	write(1, "\b\b  \b\b", 6);
+	char	c;
+
+	c = signum;
+	write(0, &c, 1);
+	write(1, "\b \b", 3);
 	return ;
 }
 
@@ -32,4 +37,18 @@ void		global_change(int signum)
 	if (signum == 3)
 		write(2, "Quit: 3", 7);
 	write(1, "  \n", 3);
+}
+
+void	crtl_d_exit(void)
+{
+	disable_rawmode();
+	write(2, "exit\n", 5);
+	exit(0);
+}
+
+void	crtl_c_buf(char **buf)
+{
+	free(*buf);
+	*buf = ft_calloc(1, 1);
+	ft_printf("^C\n> ");
 }

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:52:16 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:44:51 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:10:01 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int		simple_exec(t_cmds cmds, char **envp, char *cp)
 	argv = push_front_tab(cp, cmds.args);
 	if (!fork())
 	{
+		disable_rawmode();
 		execve(cp, argv, envp);
 		exit(0);
 	}
@@ -43,6 +44,7 @@ int		simple_exec(t_cmds cmds, char **envp, char *cp)
 		signal(3, global_change);
 		wait(&status);
 	}
+	enable_rawmode();
 	if (cmds.cmd != cp)
 		free(cp);
 	free_tab(argv);

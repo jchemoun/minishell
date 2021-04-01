@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 14:50:30 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/01 19:52:22 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <fcntl.h>
+# include <curses.h>
+# include <term.h>
+# include <termios.h>
 # include <libft.h>
 # include <ft_printf.h>
 # include <get_next_line.h>
@@ -44,6 +47,14 @@ typedef struct	s_cmds
 	int			sep;
 	char		*rst;
 }				t_cmds;
+
+typedef	struct	s_historia_dc
+{
+	char					*str;
+	struct	s_historia_dc	*prev;
+	struct	s_historia_dc	*next;
+}				t_historia_dc;
+
 
 int				ft_isspace(char c);
 size_t			ft_charat(const char *str, int c);
@@ -91,6 +102,8 @@ int				cmd_not_f(t_cmds cmds);
 void			signal_callback_handler(int signum);
 void			sign3(int signum);
 void			global_change(int signum);
+void	crtl_d_exit(void);
+void	crtl_c_buf(char **buf);
 
 int				ft_werror(char *str, t_cmds cmds, int rcode);
 int				ft_werrornoarg(char *str, t_cmds cmds, int rcode);
@@ -103,7 +116,7 @@ int				ft_werror_file(char ***envp, t_cmds cmds,
 								t_cmds rst_cmds, int rcode);
 
 char			**ft_copy(char **envp);
-void			replace_free_intab(char ***tab, char *src, int pos);
+void			replace_free_intab(char ***tabb, char *src, int pos);
 int				ft_nbl(char **envp);
 char			**ft_copy(char **envp);
 char			**ft_sort_env(char **fenv);
@@ -114,5 +127,16 @@ char			**ft_base_env(void);
 
 void			rpl_bs_ligne(char **line);
 void			rpl_bs_cmds(t_cmds cmds);
+
+void			enable_rawmode(void);
+void			disable_rawmode(void);
+
+void	proper_exit(unsigned char exit_code, int error);
+
+void	get_char(char *c, char **buf, t_historia_dc **historia);
+char	*read_linev2(t_historia_dc **historia);
+void	arrow_up(char **buf, t_historia_dc **historia);
+void	arrow_down(char **buf, t_historia_dc **historia);
+void	arrow_lr(char **buf);
 
 #endif

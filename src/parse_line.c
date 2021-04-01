@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:47:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 16:41:40 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/01 17:33:40 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,30 +36,30 @@ int		check_quote(char *line)
 
 char	*get_cmd(char *line, size_t *i)
 {
-	int		tab[4];
+	int		tabb[4];
 	char	*nl;
 
-	tab[0] = 0;
-	tab[1] = 0;
-	tab[2] = 0;
-	tab[3] = 0;
+	tabb[0] = 0;
+	tabb[1] = 0;
+	tabb[2] = 0;
+	tabb[3] = 0;
 	if (!(nl = malloc(ft_strlen(line) + 1)))
 		return (0);
-	while (line[*i] && !tab[0])
+	while (line[*i] && !tabb[0])
 	{
 		if ((line[*i] == ' ' || ft_isinset(line[*i], SEP_SET))
-			&& !(tab[1] % 2) && !(tab[2] % 2))
-			tab[0] = 1;
-		else if (line[*i] == '\'' && !(tab[2] % 2))
-			tab[1] += 1;
-		else if (line[*i] == '\"' && !(tab[1] % 2))
-			tab[2] += 1;
+			&& !(tabb[1] % 2) && !(tabb[2] % 2))
+			tabb[0] = 1;
+		else if (line[*i] == '\'' && !(tabb[2] % 2))
+			tabb[1] += 1;
+		else if (line[*i] == '\"' && !(tabb[1] % 2))
+			tabb[2] += 1;
 		else
-			nl[tab[3]++] = line[*i];
-		if (tab[0] != 1)
+			nl[tabb[3]++] = line[*i];
+		if (tabb[0] != 1)
 			*i = *i + 1;
 	}
-	nl[tab[3]] = 0;
+	nl[tabb[3]] = 0;
 	return (nl);
 }
 
