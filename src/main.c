@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 19:59:15 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 12:41:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@ void		entry_loop(char ***envp)
 		proper_exit(1, 1);
 	historia->prev = 0;
 	historia->next = 0;
+	historia->str = 0;
 	while (!stop)
 	{
 		signal(SIGINT, signal_callback_handler);
 		signal(3, sign3);
 		line = read_linev2(&historia);
-		
+		add_historia(line, &historia);
 		stop = parse_line(line, envp);
 	}
 }
