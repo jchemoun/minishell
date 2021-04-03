@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 10:50:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/27 10:58:51 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:46:04 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct	s_list
+typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
