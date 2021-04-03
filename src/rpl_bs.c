@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   rpl_bs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 12:39:05 by user42            #+#    #+#             */
-/*   Updated: 2020/11/02 15:10:09 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/03 14:21:04 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		find_bs(char *line)
+int	find_bs(char *line)
 {
 	int	i;
 	int	inqu;
@@ -34,9 +34,9 @@ int		find_bs(char *line)
 	return (-1);
 }
 
-int		which_bs(char c, char *set)
+int	which_bs(char c, char *set)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (set[i])
@@ -72,7 +72,8 @@ void	recu_bs(char **line, char *nl, int *i)
 		nl[j] = (*line)[j];
 		j++;
 	}
-	if ((bs = which_bs((*line)[*i + 1], "'\"\\$")))
+	bs = which_bs((*line)[*i + 1], "'\"\\$");
+	if (bs)
 	{
 		nl[j] = bs;
 		*i = *i + 1;
@@ -81,8 +82,8 @@ void	recu_bs(char **line, char *nl, int *i)
 		nl[j] = '\\';
 	*i = find_bs((*line + *i + 1));
 	if (*i == -1)
-		fill_rst(*line + j + 1 + (*i == -1 &&
-			*(*line + j + 1) != 0), (nl + j + 1));
+		fill_rst(*line + j + 1 + (*i == -1
+				&& *(*line + j + 1) != 0), (nl + j + 1));
 	else
 		recu_bs(line, nl + j, i);
 }

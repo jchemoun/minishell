@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 17:09:32 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 20:02:36 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:02:59 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	get_char(char *c, char **buf, t_historia_dc **historia)
 		}
 	}
 	return ;
-	/* todo : get termcaps and change buf to history */
 }
 
 void	ft_append(char **buf, char c)
@@ -111,39 +110,3 @@ char	*read_linev2(t_historia_dc **historia)
 	}
 	return (0);
 }
-/*
-void	crtl_bs(int signum)
-{
-	char	c;
-
-	c = signum;
-	write(0, &c, 1);
-	write(1, "\b \b", 3);
-	return ;
-}
-
-int	main(void)
-{
-	char *termtype = getenv("TERM");
-	int success;
-	char *term_buf = 0;
-	printf("%s\n", termtype);
-	if (termtype == 0)
-		exit(1);
-	success = tgetent(term_buf, termtype);
-	printf("%i %s\n", success, term_buf);
-	// 'le', 'nd' to move cursor
-	// 'kr 'ku' etc for input arrow and etc
-	// 'dc' or 'DC' to remove crt-\ signal
-	enable_rawmode();
-	signal(3, crtl_bs);
-	signal(2, crtl_bs);
-	char *line;
-	line = read_linev2();
-	printf("LINE : %s\n", line);
-	free(line);
-	disable_rawmode();
-	return (0);
-	/* todo : make history liste chainé
-}
-*/

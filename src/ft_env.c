@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:06:39 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:06:45 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:28:16 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		ft_env(t_cmds cmds, char ***envp)
+int	ft_env(t_cmds cmds, char ***envp)
 {
 	size_t	i;
 
@@ -32,7 +32,8 @@ char	**ft_base_env(void)
 	char	**newenv;
 	char	pwd[BUF_S];
 
-	if (!(newenv = malloc(sizeof(char *) * (4))))
+	newenv = malloc(sizeof(char *) * (4));
+	if (!newenv)
 		return (NULL);
 	newenv[0] = ft_strdup("OLDPWD=");
 	getcwd(pwd, BUF_S);

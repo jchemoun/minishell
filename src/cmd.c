@@ -6,27 +6,27 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:52:16 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 18:10:01 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 12:56:28 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		ft_empty_cmd(t_cmds cmds, char ***envp)
+int	ft_empty_cmd(t_cmds cmds, char ***envp)
 {
 	(void)envp;
 	free_cmd(cmds);
 	return (0);
 }
 
-int		cmd_not_f(t_cmds cmds)
+int	cmd_not_f(t_cmds cmds)
 {
 	ft_werror("command not found", cmds, 127);
 	free_cmd(cmds);
 	return (1);
 }
 
-int		simple_exec(t_cmds cmds, char **envp, char *cp)
+int	simple_exec(t_cmds cmds, char **envp, char *cp)
 {
 	char	**argv;
 	int		status;
@@ -49,13 +49,11 @@ int		simple_exec(t_cmds cmds, char **envp, char *cp)
 		free(cp);
 	free_tab(argv);
 	free_cmd(cmds);
-	g_ret = (WIFSIGNALED(status) ? 128 +
-		W_EXITCODE(WEXITSTATUS(status), status) :
-		W_EXITCODE(WEXITSTATUS(status), status));
+	tern_g_code(status);
 	return (W_EXITCODE(WEXITSTATUS(status), status));
 }
 
-int		is_builtin(char *cmd)
+int	is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -78,7 +76,7 @@ int		is_builtin(char *cmd)
 	return (0);
 }
 
-int		single_cmd(t_cmds cmds, char ***envp)
+int	single_cmd(t_cmds cmds, char ***envp)
 {
 	int		i;
 	int		ret;

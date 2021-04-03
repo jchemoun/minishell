@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:05:48 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 12:46:06 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:31:44 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	replace_free_intab(char ***tabb, char *src, int pos)
 	(*tabb)[pos] = ft_strdup(src);
 }
 
-int		ft_nbl(char **envp)
+int	ft_nbl(char **envp)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (envp[i])
@@ -53,7 +53,8 @@ char	**ft_copy(char **envp)
 	char	**fenv;
 	int		i;
 
-	if (!(fenv = malloc(sizeof(char *) * (ft_nbl(envp) + 1))))
+	fenv = malloc(sizeof(char *) * (ft_nbl(envp) + 1));
+	if (!fenv)
 		return (NULL);
 	i = 0;
 	while (envp[i])
@@ -73,9 +74,9 @@ char	**ft_sort_env(char **fenv)
 	i = 0;
 	while (fenv[i + 1])
 	{
-		if (ft_strncmp(fenv[i], fenv[i + 1], ft_charat(fenv[i], '=') >
-			ft_charat(fenv[i + 1], '=') ? ft_charat(fenv[i], '=') :
-			ft_charat(fenv[i + 1], '=')) > 0)
+		if (ft_strncmp(fenv[i], fenv[i + 1], ft_charat(fenv[i], '=')
+				> ft_charat(fenv[i + 1], '=') ? ft_charat(fenv[i], '=')
+				: ft_charat(fenv[i + 1], '=')) > 0)
 		{
 			tmp = fenv[i];
 			fenv[i] = fenv[i + 1];

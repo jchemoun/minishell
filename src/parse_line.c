@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:47:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 17:33:40 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:18:29 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		check_quote(char *line)
+int	check_quote(char *line)
 {
 	int		i;
 	int		inqu;
@@ -39,11 +39,11 @@ char	*get_cmd(char *line, size_t *i)
 	int		tabb[4];
 	char	*nl;
 
-	tabb[0] = 0;
-	tabb[1] = 0;
-	tabb[2] = 0;
-	tabb[3] = 0;
-	if (!(nl = malloc(ft_strlen(line) + 1)))
+	tabb[0] = 4;
+	while (tabb[0])
+		tabb[--tabb[0]] = 0;
+	nl = malloc(ft_strlen(line) + 1);
+	if (!nl)
 		return (0);
 	while (line[*i] && !tabb[0])
 	{
@@ -68,7 +68,8 @@ char	**get_args2(char *line, size_t *i)
 	char	**args;
 	char	*nl;
 
-	if (!(args = malloc(sizeof(char *) * 1)))
+	args = malloc(sizeof(char *) * 1);
+	if (!args)
 		return (0);
 	args[0] = 0;
 	while (line[*i] && !ft_isinset(line[*i], SEP_SET))
@@ -85,7 +86,7 @@ char	**get_args2(char *line, size_t *i)
 	return (args);
 }
 
-int		get_sep(char *line, size_t *i)
+int	get_sep(char *line, size_t *i)
 {
 	if (line[*i] == 0)
 		return (0);
@@ -105,7 +106,7 @@ int		get_sep(char *line, size_t *i)
 	return (0);
 }
 
-int		parse_line(char *line, char ***envp)
+int	parse_line(char *line, char ***envp)
 {
 	t_cmds	cmds;
 	size_t	i;
@@ -119,7 +120,10 @@ int		parse_line(char *line, char ***envp)
 		i++;
 	cmds.args = get_args2(line, &i);
 	cmds.sep = get_sep(line, &i);
-	cmds.rst = cmds.sep ? ft_strdup(line + i + 1 + (cmds.sep == 5)) : 0;
+	if (cmds.sep)
+		cmds.rst = ft_strdup(line + i + 1 + (cmds.sep == 5));
+	else
+		cmds.rst = 0;
 	free(line);
 	rpl_bs_cmds(cmds);
 	ft_dispatch(cmds, envp);

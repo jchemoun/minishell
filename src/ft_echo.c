@@ -6,15 +6,15 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:05:07 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:05:20 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:27:39 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		is_opt_n(char *arg)
+int	is_opt_n(char *arg)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (arg[i] != '-')
@@ -29,7 +29,7 @@ int		is_opt_n(char *arg)
 	return (1);
 }
 
-int		ft_echo(t_cmds cmds, char ***envp)
+int	ft_echo(t_cmds cmds, char ***envp)
 {
 	int	i;
 	int	nl;

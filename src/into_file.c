@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:01 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:46:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:07:26 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		redir_into_file(t_cmds cmds, int fd, char ***envp)
+int	redir_into_file(t_cmds cmds, int fd, char ***envp)
 {
 	int		nstdout;
 
@@ -25,7 +25,7 @@ int		redir_into_file(t_cmds cmds, int fd, char ***envp)
 		single_cmd(cmds, envp);
 		cmds.cmd = malloc(1);
 		cmds.cmd[0] = 0;
-		cmds.args = malloc(sizeof(char*));
+		cmds.args = malloc(sizeof(char *));
 		cmds.args[0] = 0;
 		ft_dispatch(cmds, envp);
 	}
@@ -35,7 +35,7 @@ int		redir_into_file(t_cmds cmds, int fd, char ***envp)
 	return (0);
 }
 
-int		into_file(t_cmds cmds, char ***envp, int mod)
+int	into_file(t_cmds cmds, char ***envp, int mod)
 {
 	size_t	i;
 	int		fd;
@@ -49,16 +49,19 @@ int		into_file(t_cmds cmds, char ***envp, int mod)
 	rst_cmd.cmd = get_cmd(cmds.rst, &i);
 	rst_cmd.args = get_args2(cmds.rst, &i);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
-	if ((cmds.sep = get_sep(cmds.rst, &i)))
-		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
-	else
+	cmds.sep = get_sep(cmds.rst, &i);
+	if (cmds.sep
+		&& (rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5))))
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	cmds.rst = (cmds.sep) ? ft_strdup(rst_cmd.rst) : 0;
+	if (cmds.sep
+		&& (cmds.rst = ft_strdup(rst_cmd.rst)))
+		cmds.rst = 0;
 	free(rst_cmd.rst);
-	if ((mod && (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND,
-		0644)) == -1) || (!mod && (fd = open(rst_cmd.cmd, O_CREAT
-		| O_WRONLY | O_TRUNC, 0644)) == -1))
+	if ((mod
+			&& (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND,
+					0644)) == -1) || (!mod && (fd = open(rst_cmd.cmd, O_CREAT
+					| O_WRONLY | O_TRUNC, 0644)) == -1))
 		return (ft_werror_file(envp, cmds, rst_cmd, 1));
 	free_cmd(rst_cmd);
 	return (redir_into_file(cmds, fd, envp));

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:59:11 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:45:02 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:08:55 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	free_cmd(t_cmds cmds)
 	free_tab(cmds.args);
 }
 
-int		ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
+int	ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werrornoarg(str, cmds, rcode);
 	free_cmd(cmds);
@@ -26,7 +26,7 @@ int		ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
 	return (1);
 }
 
-int		ft_werrorfree(char *str, t_cmds cmds, int rcode)
+int	ft_werrorfree(char *str, t_cmds cmds, int rcode)
 {
 	ft_werror(str, cmds, rcode);
 	free_cmd(cmds);

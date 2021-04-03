@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:06:20 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 16:09:31 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:28:38 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 int	ft_exit(t_cmds cmds, char ***envp)
 {
-	int nb;
-	int i;
+	int	nb;
+	int	i;
 
 	i = 0;
 	if (cmds.args[0] == 0)
-		exit(0);
+		proper_exit(0, 0);
 	else if (cmds.args[1] != 0 && ft_isdigit(cmds.args[0][i]))
 		return (ft_werrornoargfree("too many arguments", cmds, 1));
 	if (cmds.args[0][i] == '+' || cmds.args[0][i] == '-')
@@ -30,6 +30,7 @@ int	ft_exit(t_cmds cmds, char ***envp)
 		return (ft_werrorfree("numeric argument required", cmds, 255));
 	nb = ft_atoi(cmds.args[0]);
 	proper_exit((unsigned char)nb, 0);
+	return (0);
 	(void)envp;
 }
 

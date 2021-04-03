@@ -1,45 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rpl_bs2.c                                          :+:      :+:    :+:   */
+/*   ft_tern.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/02 14:43:28 by user42            #+#    #+#             */
-/*   Updated: 2021/04/03 14:21:23 by jchemoun         ###   ########.fr       */
+/*   Created: 2021/04/03 12:54:23 by jchemoun          #+#    #+#             */
+/*   Updated: 2021/04/03 13:38:24 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	rpl_bs_inl(char *line)
+void	tern_g_code(int status)
 {
-	int	i;
-
-	i = 0;
-	while (line[i])
+	if (WIFSIGNALED(status))
 	{
-		if (line[i] == 1)
-			line[i] = '\'';
-		else if (line[i] == 2)
-			line[i] = '"';
-		else if (line[i] == 3)
-			line[i] = '\\';
-		else if (line[i] == 4)
-			line[i] = '$';
-		i++;
+		if (W_EXITCODE(WEXITSTATUS(status), status) == 131)
+			g_ret = 131;
+		else
+			g_ret = 128 + W_EXITCODE(WEXITSTATUS(status), status);
 	}
-}
-
-void	rpl_bs_cmds(t_cmds cmds)
-{
-	int	i;
-
-	i = 0;
-	rpl_bs_inl(cmds.cmd);
-	while (cmds.args[i])
-	{
-		rpl_bs_inl(cmds.args[i]);
-		i++;
-	}
+	else
+		g_ret = W_EXITCODE(WEXITSTATUS(status), status);
 }

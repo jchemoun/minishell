@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:03:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:35:22 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:27:17 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	update_oldpwd(char *arg, char ***envp)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while ((*envp)[i])
@@ -49,7 +49,7 @@ void	update_pwd(char ***envp)
 	}
 }
 
-int		ft_cd(t_cmds cmds, char ***envp)
+int	ft_cd(t_cmds cmds, char ***envp)
 {
 	struct stat	buf;
 	char		*home;

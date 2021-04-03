@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:57:42 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/01 18:38:03 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:21:39 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void		signal_callback_handler(int signum)
+void	signal_callback_handler(int signum)
 {
 	char	c;
 
@@ -22,7 +22,7 @@ void		signal_callback_handler(int signum)
 	g_ret = 1;
 }
 
-void		sign3(int signum)
+void	sign3(int signum)
 {
 	char	c;
 
@@ -32,7 +32,7 @@ void		sign3(int signum)
 	return ;
 }
 
-void		global_change(int signum)
+void	global_change(int signum)
 {
 	if (signum == 3)
 		write(2, "Quit: 3", 7);

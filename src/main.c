@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 12:41:36 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:10:38 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-char		*read_line(void)
+char	*read_line(void)
 {
 	char	*buf;
 	int		c;
@@ -34,7 +34,7 @@ char		*read_line(void)
 	return (0);
 }
 
-void		ft_dispatch(t_cmds cmds, char ***envp)
+void	ft_dispatch(t_cmds cmds, char ***envp)
 {
 	int	i;
 
@@ -53,7 +53,7 @@ void		ft_dispatch(t_cmds cmds, char ***envp)
 		g_ret = 0;
 }
 
-void		entry_loop(char ***envp)
+void	entry_loop(char ***envp)
 {
 	char			*line;
 	int				stop;
@@ -76,7 +76,7 @@ void		entry_loop(char ***envp)
 	}
 }
 
-int			main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	char		**nenvp;
 	struct stat	susless;

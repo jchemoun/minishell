@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/02 12:23:07 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:50:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,5 +141,7 @@ void	arrow_lr(char **buf);
 void	add_historia(char *line, t_historia_dc **historia);
 void	ft_deappend(char **buf);
 void	ft_append(char **buf, char c);
+void	replace_line(char **buf, char *hist);
 
+void tern_g_code(int status);
 #endif

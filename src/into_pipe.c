@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:47 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/09/16 17:28:13 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:10:08 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	refork(int pipefd[2], char *rst, char ***envp)
 		wait(0);
 }
 
-int		into_pipe(t_cmds cmds, char ***envp)
+int	into_pipe(t_cmds cmds, char ***envp)
 {
 	int		pipefd[2];
 	int		inout[2];
@@ -48,7 +48,8 @@ int		into_pipe(t_cmds cmds, char ***envp)
 		return (ft_printf("Failure to pipe\n"));
 	inout[0] = dup(0);
 	inout[1] = dup(1);
-	if ((cpid = fork()) == -1)
+	cpid = fork();
+	if (cpid == -1)
 		return (ft_printf("Failure to fork\n"));
 	if (cpid == 0)
 	{

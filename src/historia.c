@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:51:36 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 12:43:24 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:47:11 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ void	replace_line(char **buf, char *hist)
 
 void	remove_historia_dup(t_historia_dc **historia)
 {
-	t_historia_dc *prevh;
+	t_historia_dc	*prevh;
 
 	while ((*historia)->prev)
 	{
 		prevh = (*historia)->prev;
-		if ((*historia)->str &&
-			!ft_strncmp((*historia)->str, prevh->str, 999999))
+		if ((*historia)->str
+			&& !ft_strncmp((*historia)->str, prevh->str, 999999))
 		{
 			prevh->next = (*historia)->next;
 			prevh->next->prev = prevh;

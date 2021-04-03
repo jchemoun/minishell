@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:01:44 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:03:16 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 13:37:16 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_displayfree(char **fenv)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (fenv[i])
@@ -25,7 +25,7 @@ void	ft_displayfree(char **fenv)
 	free_tab(fenv);
 }
 
-int		err_id_var(char *arg)
+int	err_id_var(char *arg)
 {
 	ft_putstr_fd("minishell: export: ", 2);
 	ft_putstr_fd(arg, 2);
@@ -34,9 +34,9 @@ int		err_id_var(char *arg)
 	return (1);
 }
 
-int		check_var(char *arg)
+int	check_var(char *arg)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (arg[0] > 47 && arg[0] < 58)
@@ -57,14 +57,16 @@ void	ft_export_if(char *arg, char ***envp)
 	int	found;
 
 	i = 0;
-	eg[0] = ((int)ft_charat(arg, '=') == -1 ?
-		(int)ft_strlen(arg) : (int)ft_charat(arg, '='));
+	if ((int)ft_charat(arg, '=') == -1)
+		eg[0] = (int)ft_strlen(arg);
+	else
+		eg[0] = (int)ft_charat(arg, '=');
 	found = 0;
 	while ((*envp)[i])
 	{
 		eg[1] = ft_charat((*envp)[i], '=');
-		if (!ft_strncmp((*envp)[i], arg, eg[0]) &&
-			eg[0] == (eg[1] == -1 ? (int)ft_strlen((*envp)[i]) : eg[1]))
+		if (!ft_strncmp((*envp)[i], arg, eg[0])
+				&& eg[0] == (eg[1] == -1 ? (int)ft_strlen((*envp)[i]) : eg[1]))
 		{
 			found = 1;
 			if (eg[0] != (int)ft_strlen(arg))
@@ -73,12 +75,10 @@ void	ft_export_if(char *arg, char ***envp)
 		i++;
 	}
 	if (found == 0)
-	{
 		(*envp) = push_front_tab_free2(add_egg(arg), (*envp));
-	}
 }
 
-int		ft_export(t_cmds cmds, char ***envp)
+int	ft_export(t_cmds cmds, char ***envp)
 {
 	size_t	j;
 	int		ret;

@@ -3,9 +3,9 @@ SHELL				=	/bin/zsh
 NAME				=	minishell
 LIBFT				=	libft.a
 # Compilation mode
-WALL				=   no
-WEXTRA              =   no
-WERROR              =   no
+WALL				=   yes
+WEXTRA              =   yes
+WERROR              =   yes
 FSANITIZE           =   yes
 DEBUG               =   yes
 O2                  =   no
@@ -123,6 +123,8 @@ SRC_NAME			=	cmd.c					\
 						entry.c					\
 						raw_mode.c				\
 						historia.c				\
+						arrow.c					\
+						ft_tern.c				\
 
 INCLUDE_NAME		=	libft.h					\
 						get_next_line.h			\

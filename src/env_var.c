@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_var.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:46:37 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/11/02 15:09:42 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/03 13:07:53 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ void	rpl_gbl(char **line, size_t i, size_t pdol, char *dol)
 	j = 0;
 	k = 0;
 	len = ft_strlen(*line) - pdol + ft_strlen(dol) + 2;
-	if (!(nl = malloc(len)))
-		return ;
+	nl = malloc(len);
+	if (!nl)
+		proper_exit(1, 1);
 	while (j < len - 1)
 	{
 		if (j < i)
@@ -62,7 +63,7 @@ void	rpl_gbl(char **line, size_t i, size_t pdol, char *dol)
 	*line = nl;
 }
 
-int		rpl_var(char **line, size_t i, size_t pdol, char *menvj)
+int	rpl_var(char **line, size_t i, size_t pdol, char *menvj)
 {
 	size_t	j;
 	size_t	k;
@@ -72,8 +73,9 @@ int		rpl_var(char **line, size_t i, size_t pdol, char *menvj)
 	j = 0;
 	k = 0;
 	len = ft_strlen(*line) - ((1 + !!menvj) * pdol) + ft_strlen(menvj) + 1;
-	if (!(nl = malloc(len)))
-		return (0);
+	nl = malloc(len);
+	if (!nl)
+		proper_exit(1, 1);
 	while (j < len - 1)
 	{
 		if (j < i)
@@ -90,17 +92,18 @@ int		rpl_var(char **line, size_t i, size_t pdol, char *menvj)
 	return (1);
 }
 
-int		get_var_env(char **line, size_t os, char **menv)
+int	get_var_env(char **line, size_t os, char **menv)
 {
 	size_t	i;
 	size_t	pdol;
 	size_t	j;
 
-	if (!ft_strlen(*line) || (i = find_dol(((*line) + os))) == (size_t)-1)
+	i = find_dol((*line) + os);
+	if (!ft_strlen(*line) || i == (size_t) - 1)
 		return (0);
 	pdol = 1;
-	while (*(*line + i + pdol + os) &&
-		!ft_isinset(*(*line + i + pdol + os), STOPDOL))
+	while (*(*line + i + pdol + os)
+		&& !ft_isinset(*(*line + i + pdol + os), STOPDOL))
 		pdol++;
 	if (pdol == 1 && *(*line + i + pdol + os) == '?')
 		rpl_gbl(line, i + os, pdol, ft_itoa(g_ret));
@@ -108,11 +111,12 @@ int		get_var_env(char **line, size_t os, char **menv)
 		return (get_var_env(line, i + 1 + os, menv));
 	j = 0;
 	while (menv[j] && ft_strncmp(menv[j],
-		((*line) + i + 1 + os), ft_charat(menv[j], '=')))
+			((*line) + i + 1 + os), ft_charat(menv[j], '=')))
 		j++;
 	if (!rpl_var(line, i + os, pdol, menv[j]))
 		return (-1);
-	if ((i = find_dol(((*line) + os)) == (size_t)-1))
+	i = find_dol((*line) + os);
+	if (i == (size_t) - 1)
 		return (0);
 	return (get_var_env(line, os, menv));
 }
