@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/09 14:11:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/27 10:58:36 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:17:25 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-static int		ft_strndlen(char const *s, char c)
+static int	ft_strndlen(char const *s, char c)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ static int		ft_strndlen(char const *s, char c)
 	return (i);
 }
 
-static int		ft_countw(char const *s, char c)
+static int	ft_countw(char const *s, char c)
 {
 	size_t	i;
 	int		re;
@@ -41,7 +41,7 @@ static int		ft_countw(char const *s, char c)
 	return (re);
 }
 
-char			*ft_strdnup(char const *s, int c)
+char	*ft_strdnup(char const *s, int c)
 {
 	int		i;
 	int		len;
@@ -49,7 +49,8 @@ char			*ft_strdnup(char const *s, int c)
 
 	i = 0;
 	len = ft_strndlen(s, c);
-	if (!(re = malloc(len + 1)))
+	re = malloc(len + 1);
+	if (!re)
 		return (0);
 	while (i < len)
 	{
@@ -60,7 +61,7 @@ char			*ft_strdnup(char const *s, int c)
 	return (re);
 }
 
-char			**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c)
 {
 	int		i;
 	int		j;
@@ -74,7 +75,8 @@ char			**ft_split(char const *s, char c)
 	j = 0;
 	n_word = ft_countw(s, c);
 	prev = s[0];
-	if (!(re = malloc(sizeof(char*) * (n_word + 1))))
+	re = malloc(sizeof(char *) * (n_word + 1));
+	if (!re)
 		return (0);
 	while (s[i] && j < n_word)
 	{
@@ -87,7 +89,7 @@ char			**ft_split(char const *s, char c)
 	return (re);
 }
 
-char			**ft_split_free(char *s, char c)
+char	**ft_split_free(char *s, char c)
 {
 	int		i;
 	int		j;
@@ -101,7 +103,8 @@ char			**ft_split_free(char *s, char c)
 	j = 0;
 	n_word = ft_countw(s, c);
 	prev = s[0];
-	if (!(re = malloc(sizeof(char*) * (n_word + 1))))
+	re = malloc(sizeof(char *) * (n_word + 1));
+	if (!re)
 		return (0);
 	while (s[i] && j < n_word)
 	{

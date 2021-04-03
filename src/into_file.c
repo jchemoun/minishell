@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:01 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 14:07:26 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:26:00 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,14 @@ int	into_file(t_cmds cmds, char ***envp, int mod)
 	rst_cmd.args = get_args2(cmds.rst, &i);
 	cmds.args = ft_join_tabs_free1(cmds.args, rst_cmd.args);
 	cmds.sep = get_sep(cmds.rst, &i);
-	if (cmds.sep
-		&& (rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5))))
+	if (cmds.sep)
+		rst_cmd.rst = ft_strdup(cmds.rst + i + 1 + (cmds.sep == 5));
+	else
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	if (cmds.sep
-		&& (cmds.rst = ft_strdup(rst_cmd.rst)))
+	if (cmds.sep)
+		cmds.rst = ft_strdup(rst_cmd.rst);
+	else
 		cmds.rst = 0;
 	free(rst_cmd.rst);
 	if ((mod

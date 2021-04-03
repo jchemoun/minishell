@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/09 10:00:05 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 16:53:05 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:08:47 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!s1 || !s2)
 		return (0);
 	len = ft_strlen(s1) + ft_strlen(s2);
-	if (!(re = malloc(len + 1)))
+	re = malloc(len + 1);
+	if (!re)
 		return (0);
 	while (s1 && s1[i])
 	{

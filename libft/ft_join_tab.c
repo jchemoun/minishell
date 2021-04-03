@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:56:35 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:48:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:54:03 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-char		**ft_join_tabs(char **t1, char **t2)
+char	**ft_join_tabs(char **t1, char **t2)
 {
 	char	**re;
 	size_t	i;
@@ -25,7 +25,8 @@ char		**ft_join_tabs(char **t1, char **t2)
 	j = 0;
 	while (t2[j])
 		j++;
-	if (!(re = malloc(sizeof(char*) * (i + j + 1))))
+	re = malloc(sizeof(char *) * (i + j + 1));
+	if (!re)
 		return (0);
 	len = 0;
 	i = 0;
@@ -38,7 +39,7 @@ char		**ft_join_tabs(char **t1, char **t2)
 	return (re);
 }
 
-char		**ft_join_tabs_free1(char **t1, char **t2)
+char	**ft_join_tabs_free1(char **t1, char **t2)
 {
 	char	**re;
 

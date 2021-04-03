@@ -6,16 +6,16 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:24:12 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/19 16:59:26 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:02:07 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 #include <ft_printf.h>
 
-int			ft_snbr(long long int n, char *b)
+int	ft_snbr(long long int n, char *b)
 {
-	int i;
+	int	i;
 	int	bl;
 
 	bl = (int)ft_strlen(b);
@@ -101,7 +101,7 @@ static int	ft_nbrm(long long int n, int field, int prec, char *b)
 		return (write(1, buf_0, i) + ft_putnbr_base(n, b) + write(1, buf_s, j));
 }
 
-int			ft_print_nbr(int conv[N_FLAG], va_list pa)
+int	ft_print_nbr(int conv[N_FLAG], va_list pa)
 {
 	long long int	n;
 	signed char		sc;

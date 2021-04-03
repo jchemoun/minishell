@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:36:59 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 17:18:13 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:01:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	ft_print_nl(int flag, int re, va_list pa)
 
 static int	ft_print_nh(int flag, int re, va_list pa)
 {
-	void *i;
+	void	*i;
 
 	if (flag == -1)
 	{
@@ -47,7 +47,7 @@ static int	ft_print_nh(int flag, int re, va_list pa)
 	return (0);
 }
 
-int			ft_print_n(int conv[N_FLAG], va_list pa)
+int	ft_print_n(int conv[N_FLAG], va_list pa)
 {
 	void	*i;
 

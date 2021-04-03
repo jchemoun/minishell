@@ -6,15 +6,15 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/10 10:21:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 16:53:05 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:55:51 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-int		ft_lstsize(t_list *lst)
+int	ft_lstsize(t_list *lst)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (lst)

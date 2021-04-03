@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:14:54 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/02/20 11:48:32 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:51:10 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_isinset(char c, char *set)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (set[i])

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/09 16:39:24 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 16:53:05 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:09:28 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 		return (0);
 	i = 0;
 	len = ft_strlen(s);
-	if (!(re = malloc(sizeof(char) * (len + 1))))
+	re = malloc(sizeof(char) * (len + 1));
+	if (!re)
 		return (0);
 	while (i < len)
 	{

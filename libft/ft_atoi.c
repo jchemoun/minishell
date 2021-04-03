@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/08 12:37:36 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/05 16:52:26 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:50:24 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_atoi(const char *nptr)
 {
-	int i;
+	int	i;
 	int	re;
 	int	signe;
 

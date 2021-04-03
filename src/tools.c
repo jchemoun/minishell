@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:58:28 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 14:30:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:16:29 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,12 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	return (0);
 }
 
-int	isindir(t_cmds cmds, char **envp, int *j)
+int	isindir(t_cmds cmds, int *j)
 {
 	int			i;
 	struct stat	buf;
 
-	if (ft_charat(cmds.cmd, '/') == -1)
+	if (ft_charat(cmds.cmd, '/') == ((size_t) - 1))
 		return (0);
 	if (stat(cmds.cmd, &buf) == -1)
 	{
@@ -105,7 +105,8 @@ int	isindir(t_cmds cmds, char **envp, int *j)
 		free_cmd(cmds);
 		return (0);
 	}
-	if (get_perm(buf, 0) == 1)
+	i = get_perm(buf, 0);
+	if (i == 1)
 		return (1);
 	else
 	{
@@ -117,5 +118,4 @@ int	isindir(t_cmds cmds, char **envp, int *j)
 		free_cmd(cmds);
 	}
 	return (0);
-	(void)envp;
 }

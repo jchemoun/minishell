@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:33:36 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/19 16:58:56 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:01:08 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static size_t	ft_strlenull(const char *s)
 {
-	size_t i;
+	size_t	i;
 
 	if (!s)
 		return (6);
@@ -25,7 +25,7 @@ static size_t	ft_strlenull(const char *s)
 	return (i);
 }
 
-int				ft_print_string(int conv[N_FLAG], va_list pa)
+int	ft_print_string(int conv[N_FLAG], va_list pa)
 {
 	int		i;
 	int		j;
@@ -54,7 +54,7 @@ int				ft_print_string(int conv[N_FLAG], va_list pa)
 	return ((int)write(1, buf, i));
 }
 
-int				ft_print_pc(int conv[N_FLAG], va_list pa)
+int	ft_print_pc(int conv[N_FLAG], va_list pa)
 {
 	int				i;
 	int				range;
@@ -78,7 +78,7 @@ int				ft_print_pc(int conv[N_FLAG], va_list pa)
 	return ((int)write(1, buf, i));
 }
 
-int				ft_print_char(int conv[N_FLAG], va_list pa)
+int	ft_print_char(int conv[N_FLAG], va_list pa)
 {
 	int				i;
 	int				range;

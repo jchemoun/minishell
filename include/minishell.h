@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 14:48:24 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:16:23 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char			*get_path(char **envp);
 int				simple_exec(t_cmds cmds, char **envp, char *cp);
 int				get_perm(struct stat buf, int f);
 char			*isinpath(t_cmds cmds, char **envp, int *j);
-int				isindir(t_cmds cmds, char **envp, int *j);
+int				isindir(t_cmds cmds, int *j);
 int				check_quote(char *line);
 char			*get_cmd(char *line, size_t *i);
 char			*get_args(char *line, size_t *i);

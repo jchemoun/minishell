@@ -6,13 +6,13 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:56:35 by jchemoun          #+#    #+#             */
-/*   Updated: 2020/03/09 11:48:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:17:57 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-char		**push_front_tab(char *cp, char **args)
+char	**push_front_tab(char *cp, char **args)
 {
 	char	**re;
 	size_t	i;
@@ -22,7 +22,8 @@ char		**push_front_tab(char *cp, char **args)
 	j = 0;
 	while (args[i])
 		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
+	re = malloc(sizeof(char *) * (i + 2));
+	if (!re)
 		return (0);
 	re[0] = ft_strdup(cp);
 	while (j < i)
@@ -34,7 +35,7 @@ char		**push_front_tab(char *cp, char **args)
 	return (re);
 }
 
-char		**push_front_tab_free(char *cp, char **args)
+char	**push_front_tab_free(char *cp, char **args)
 {
 	char	**re;
 	size_t	i;
@@ -44,7 +45,8 @@ char		**push_front_tab_free(char *cp, char **args)
 	j = 0;
 	while (args[i])
 		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
+	re = malloc(sizeof(char *) * (i + 2));
+	if (!re)
 		return (0);
 	re[0] = ft_strdup(cp);
 	while (j < i)
@@ -57,7 +59,7 @@ char		**push_front_tab_free(char *cp, char **args)
 	return (re);
 }
 
-char		**push_back_tab_free(char *cp, char **args)
+char	**push_back_tab_free(char *cp, char **args)
 {
 	char	**re;
 	size_t	i;
@@ -67,7 +69,8 @@ char		**push_back_tab_free(char *cp, char **args)
 	j = 0;
 	while (args[i])
 		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
+	re = malloc(sizeof(char *) * (i + 2));
+	if (!re)
 		return (0);
 	while (j < i)
 	{
@@ -80,7 +83,7 @@ char		**push_back_tab_free(char *cp, char **args)
 	return (re);
 }
 
-char		**push_front_tab_free2(char *cp, char **args)
+char	**push_front_tab_free2(char *cp, char **args)
 {
 	char	**re;
 	size_t	i;
@@ -90,7 +93,8 @@ char		**push_front_tab_free2(char *cp, char **args)
 	j = 0;
 	while (args[i])
 		i++;
-	if (!(re = malloc(sizeof(char*) * (i + 2))))
+	re = malloc(sizeof(char *) * (i + 2));
+	if (!re)
 		return (0);
 	re[0] = ft_strdup(cp);
 	while (j < i)
@@ -104,9 +108,9 @@ char		**push_front_tab_free2(char *cp, char **args)
 	return (re);
 }
 
-int			free_tab(char **args)
+int	free_tab(char **args)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (args[i])

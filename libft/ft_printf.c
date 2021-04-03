@@ -6,14 +6,14 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:38:38 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/29 15:35:40 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:02:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 #include <ft_printf.h>
 
-int		ft_print(int conv[N_FLAG], char typ, va_list pa, int *re)
+int	ft_print(int conv[N_FLAG], char typ, va_list pa, int *re)
 {
 	int	(*print_tab[N_CONV])(int conv[N_FLAG], va_list pa);
 	int	i;
@@ -54,7 +54,7 @@ void	ft_tabinit_pf(int tab[N_FLAG], int *re)
 	tab[5] = *re;
 }
 
-int		ft_convert(const char *fi, int os, va_list pa, int *re)
+int	ft_convert(const char *fi, int os, va_list pa, int *re)
 {
 	int conv[N_FLAG];
 
@@ -81,7 +81,7 @@ int		ft_convert(const char *fi, int os, va_list pa, int *re)
 	return (conv[0] == os ? ft_print(conv, fi[os], pa, re) : -1);
 }
 
-int		ft_ttribut(const char *f, size_t i, va_list pa, int *re)
+int	ft_ttribut(const char *f, size_t i, va_list pa, int *re)
 {
 	int	os;
 
@@ -97,7 +97,7 @@ int		ft_ttribut(const char *f, size_t i, va_list pa, int *re)
 	return (ft_isinset(f[os + i], CONVSET) ? os + 1 : os);
 }
 
-int		ft_printf(const char *f, ...)
+int	ft_printf(const char *f, ...)
 {
 	va_list	ap;
 	size_t	i;
