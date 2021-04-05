@@ -1,41 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   frees.c                                            :+:      :+:    :+:   */
+/*   cmd_tools.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/09 10:59:11 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/05 12:42:13 by jchemoun         ###   ########.fr       */
+/*   Created: 2021/04/05 12:44:28 by jchemoun          #+#    #+#             */
+/*   Updated: 2021/04/05 12:45:01 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	free_cmd(t_cmds cmds)
+int	ft_empty_cmd(t_cmds cmds, char ***envp)
 {
-	free(cmds.cmd);
-	free_tab(cmds.args);
+	(void)envp;
+	free_cmd(cmds);
+	return (0);
 }
 
-int	ft_werrornoargfree(char *str, t_cmds cmds, int rcode)
+int	cmd_not_f(t_cmds cmds)
 {
-	ft_werrornoarg(str, cmds, rcode);
+	ft_werror("command not found", cmds, 127);
 	free_cmd(cmds);
-	g_ret = rcode;
 	return (1);
 }
 
-int	ft_werrorfree(char *str, t_cmds cmds, int rcode)
+void	init_builtin(int (*(*builtin)[8])(t_cmds, char ***envp))
 {
-	ft_werror(str, cmds, rcode);
-	free_cmd(cmds);
-	g_ret = rcode;
-	return (1);
-}
-
-void	free_zero(void **ptr)
-{
-	free(*ptr);
-	*ptr = 0;
+	(*builtin)[0] = &ft_echo;
+	(*builtin)[1] = &ft_cd;
+	(*builtin)[2] = &ft_pwd;
+	(*builtin)[3] = &ft_export;
+	(*builtin)[4] = &ft_unset;
+	(*builtin)[5] = &ft_env;
+	(*builtin)[6] = &ft_exit;
+	(*builtin)[7] = &ft_empty_cmd;
 }

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 15:16:23 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:46:49 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <termios.h>
 # include <libft.h>
 # include <ft_printf.h>
-# include <get_next_line.h>
 
 # define SEP_SET ";|<>\0"
 # define STOPDOL " \"'+;,<>/\\.%&|:$?\0"
@@ -58,6 +57,7 @@ typedef struct s_historia_dc
 int				ft_isspace(char c);
 size_t			ft_charat(const char *str, int c);
 void			free_cmd(t_cmds cmds);
+void			free_zero(void **ptr);
 char			*ft_strjoinfree2(const char *s1, const char *s2);
 char			*read_line(void);
 char			*get_path(char **envp);
@@ -87,6 +87,7 @@ int				from_file(t_cmds cmds, char ***envp);
 int				into_file(t_cmds cmds, char ***envp, int mod);
 
 int				is_builtin(char *cmd);
+void			init_builtin(int (*(*builtin)[8])(t_cmds, char ***envp));
 
 int				ft_echo(t_cmds cmds, char ***envp);
 int				ft_cd(t_cmds cmds, char ***envp);

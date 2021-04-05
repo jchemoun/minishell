@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:01 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 15:26:00 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:13:45 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,30 @@ int	redir_into_file(t_cmds cmds, int fd, char ***envp)
 	return (0);
 }
 
+int	into_file2(t_cmds cmds, char ***envp, int mod, t_cmds rst_cmd)
+{
+	int	fd;
+	int	modopen;
+
+	if (cmds.sep)
+		cmds.rst = ft_strdup(rst_cmd.rst);
+	else
+		cmds.rst = 0;
+	free(rst_cmd.rst);
+	if (mod)
+		modopen = (O_CREAT | O_WRONLY | O_APPEND);
+	else
+		modopen = (O_CREAT | O_WRONLY | O_TRUNC);
+	fd = open(rst_cmd.cmd, modopen, 0644);
+	if (fd == -1)
+		return (ft_werror_file(envp, cmds, rst_cmd, 1));
+	free_cmd(rst_cmd);
+	return (redir_into_file(cmds, fd, envp));
+}
+
 int	into_file(t_cmds cmds, char ***envp, int mod)
 {
 	size_t	i;
-	int		fd;
 	t_cmds	rst_cmd;
 
 	i = 0;
@@ -55,16 +75,5 @@ int	into_file(t_cmds cmds, char ***envp, int mod)
 	else
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	if (cmds.sep)
-		cmds.rst = ft_strdup(rst_cmd.rst);
-	else
-		cmds.rst = 0;
-	free(rst_cmd.rst);
-	if ((mod
-			&& (fd = open(rst_cmd.cmd, O_CREAT | O_WRONLY | O_APPEND,
-					0644)) == -1) || (!mod && (fd = open(rst_cmd.cmd, O_CREAT
-					| O_WRONLY | O_TRUNC, 0644)) == -1))
-		return (ft_werror_file(envp, cmds, rst_cmd, 1));
-	free_cmd(rst_cmd);
-	return (redir_into_file(cmds, fd, envp));
+	return (into_file2(cmds, envp, mod, rst_cmd));
 }

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:49:24 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:51:35 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:17:39 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,25 @@ int	redir_form_file(t_cmds cmds, int fd, char ***envp)
 	return (0);
 }
 
+int	from_file2(t_cmds cmds, char ***envp, t_cmds rst_cmd)
+{
+	int	fd;
+
+	if (cmds.sep)
+		cmds.rst = ft_strdup(rst_cmd.rst);
+	else
+		cmds.rst = 0;
+	free(rst_cmd.rst);
+	fd = open(rst_cmd.cmd, O_RDONLY);
+	if (fd == -1)
+		return (ft_werror_file_from(envp, cmds, rst_cmd, 1));
+	free_cmd(rst_cmd);
+	return (redir_form_file(cmds, fd, envp));
+}
+
 int	from_file(t_cmds cmds, char ***envp)
 {
 	size_t	i;
-	int		fd;
 	t_cmds	rst_cmd;
 
 	i = 0;
@@ -55,14 +70,5 @@ int	from_file(t_cmds cmds, char ***envp)
 	else
 		rst_cmd.rst = 0;
 	free(cmds.rst);
-	if (cmds.sep)
-		cmds.rst = ft_strdup(rst_cmd.rst);
-	else
-		cmds.rst = 0;
-	free(rst_cmd.rst);
-	fd = open(rst_cmd.cmd, O_RDONLY);
-	if (fd == -1)
-		return (ft_werror_file_from(envp, cmds, rst_cmd, 1));
-	free_cmd(rst_cmd);
-	return (redir_form_file(cmds, fd, envp));
+	return (from_file2(cmds, envp, rst_cmd));
 }

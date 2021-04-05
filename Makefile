@@ -125,6 +125,7 @@ SRC_NAME			=	cmd.c					\
 						historia.c				\
 						arrow.c					\
 						ft_tern.c				\
+						cmd_tools.c				\
 
 INCLUDE_NAME		=	libft.h					\
 						get_next_line.h			\

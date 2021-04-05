@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:58:28 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 15:16:29 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:34:29 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	{
 		nl = ft_strjoinfree2(paths[i], ft_strjoin("/", cmds.cmd));
 		if (stat(nl, &buf) == -1)
-			free(nl);
+			free_zero((void **)&nl);
 		else
 			break ;
 	}

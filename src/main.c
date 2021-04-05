@@ -6,33 +6,11 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:16:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 14:10:38 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:47:08 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-
-char	*read_line(void)
-{
-	char	*buf;
-	int		c;
-
-	c = 2;
-	buf = 0;
-	while (c)
-	{
-		ft_printf("> ");
-		c = get_next_line_cd(0, &buf);
-		if (c == 1)
-			return (buf);
-		else if (c == 0 && *buf == 0)
-		{
-			write(0, "exit\n", 5);
-			exit(0);
-		}
-	}
-	return (0);
-}
 
 void	ft_dispatch(t_cmds cmds, char ***envp)
 {
