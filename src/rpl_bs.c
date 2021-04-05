@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 12:39:05 by user42            #+#    #+#             */
-/*   Updated: 2021/04/03 14:21:04 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/05 13:54:20 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	recu_bs(char **line, char *nl, int *i)
 		*i = *i + 1;
 	}
 	else
-		nl[j] = '\\';
+		rpl_bs_dquote(*line, nl, i, &j);
 	*i = find_bs((*line + *i + 1));
 	if (*i == -1)
 		fill_rst(*line + j + 1 + (*i == -1
