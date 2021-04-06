@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 10:52:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/05 13:50:28 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/06 16:32:02 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ char			**ft_base_env(void);
 
 void			rpl_bs_ligne(char **line);
 void			rpl_bs_cmds(t_cmds cmds);
-void	rpl_bs_dquote(char *line, char *nl, int *j, int *k);
+int				rpl_bs_dquote(char *line, char *nl, int *j, int *k);
 
 void			enable_rawmode(void);
 void			disable_rawmode(void);

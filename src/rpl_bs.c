@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 12:39:05 by user42            #+#    #+#             */
-/*   Updated: 2021/04/05 13:54:20 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/06 17:16:01 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,10 @@ void	fill_rst(char *line, char *nl)
 		i++;
 	}
 	nl[i] = '\0';
+	rpl_bs_dquote(line, 0, &i, &i);
 }
 
-void	recu_bs(char **line, char *nl, int *i)
+void	recu_bs(char *line, char *nl, int *i)
 {
 	int	j;
 	int	bs;
@@ -69,23 +70,23 @@ void	recu_bs(char **line, char *nl, int *i)
 	j = 0;
 	while (j < *i)
 	{
-		nl[j] = (*line)[j];
+		nl[j] = line[j];
 		j++;
 	}
-	bs = which_bs((*line)[*i + 1], "'\"\\$");
+	bs = which_bs((line)[*i + 1], "'\"\\$");
+	printf("%i\n", bs);
 	if (bs)
 	{
 		nl[j] = bs;
 		*i = *i + 1;
 	}
 	else
-		rpl_bs_dquote(*line, nl, i, &j);
-	*i = find_bs((*line + *i + 1));
+		bs = rpl_bs_dquote(line, nl, i, &j);
+	*i = find_bs((line + *i + 1));
 	if (*i == -1)
-		fill_rst(*line + j + 1 + (*i == -1
-				&& *(*line + j + 1) != 0), (nl + j + 1));
+		fill_rst(line + j + 1 + (bs != 42), (nl + j + 1));
 	else
-		recu_bs(line, nl + j, i);
+		recu_bs(line + j + 1 + (bs != 42), nl + j + 1, i);
 }
 
 void	rpl_bs_ligne(char **line)
@@ -96,9 +97,10 @@ void	rpl_bs_ligne(char **line)
 	i = find_bs(*line);
 	nl = malloc(ft_strlen(*line) + 1);
 	if (i != -1)
-		recu_bs(line, nl, &i);
+		recu_bs(*line, nl, &i);
 	else
 		fill_rst(*line, nl);
 	free(*line);
 	*line = nl;
+	printf("POST RECU %s\n", *line);
 }

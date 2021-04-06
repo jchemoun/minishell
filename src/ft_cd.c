@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:03:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:27:17 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/06 14:31:27 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ int	ft_cd(t_cmds cmds, char ***envp)
 	if (cmds.args[0] == 0)
 	{
 		home = get_home(*envp);
+		if (!home)
+			return (ft_werrorfree("\" HOME \" undefined", cmds, 1));
 		chdir(home + 5);
 		update_pwd(envp);
 		free_cmd(cmds);
