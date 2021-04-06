@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:09:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:45:27 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/06 13:55:57 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,6 @@ int	ft_werror_file_from(char ***envp, t_cmds cmds,
 		free_cmd(cmds);
 	if (cmds.sep != 1)
 		g_ret = rcode;
-	else
-		g_ret = g_ret;
 	return (1);
 }
 
