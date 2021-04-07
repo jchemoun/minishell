@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:05:48 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:31:44 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/07 12:15:09 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ char	**ft_copy(char **envp)
 		i++;
 	}
 	fenv[i] = 0;
+	shlvl_add(fenv);
 	return (fenv);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:06:39 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:28:16 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/07 12:17:54 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,21 @@ char	**ft_base_env(void)
 	newenv[2] = ft_strdup("SHLVL=1");
 	newenv[3] = 0;
 	return (newenv);
+}
+
+void	shlvl_add(char **envp)
+{
+	int		i;
+	int		lvl;
+	char	*nlvl;
+
+	i = 0;
+	while (ft_strncmp(envp[i], "SHLVL=", 6))
+		i++;
+	if (ft_strncmp(envp[i], "SHLVL=", 6))
+		return ;
+	lvl = ft_atoi(envp[i] + 6);
+	nlvl = ft_strjoinfree2("SHLVL=", ft_itoa(lvl + 1));
+	free(envp[i]);
+	envp[i] = nlvl;
 }

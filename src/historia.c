@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:51:36 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:47:11 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/07 12:03:14 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void	add_historia(char *line, t_historia_dc **historia)
 {
 	t_historia_dc	*newh;
 
+	if (*line == '\n' || !*line)
+		return ;
 	while ((*historia)->next)
 		*historia = (*historia)->next;
 	newh = malloc(sizeof(t_historia_dc));
