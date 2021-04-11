@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:47:57 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 14:18:29 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/11 13:11:34 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ int	check_quote(char *line)
 	indqu = 0;
 	while (line[i])
 	{
-		if (line[i] == '\'' && !(indqu % 2))
+		if (line[i] == '\'' && !(indqu % 2) && (i == 0 || line[i - 1] != '\\'
+				|| (i != 1 && line[i - 2] == '\\')))
 			inqu += 1;
-		if (line[i] == '\"' && !(inqu % 2))
+		if (line[i] == '\"' && !(inqu % 2) && (i == 0 || line[i - 1] != '\\'
+				|| (i != 1 && line[i - 2] == '\\')))
 			indqu += 1;
 		i++;
 	}
@@ -111,6 +113,11 @@ int	parse_line(char *line, char ***envp)
 	t_cmds	cmds;
 	size_t	i;
 
+	if (check_quote(line))
+	{
+		free(line);
+		return (1 - !!write(2, "Error quote or dquote\n", 23));
+	}
 	var_env_ligne(&line, envp);
 	i = 0;
 	while (ft_isspace(line[i]))

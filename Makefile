@@ -102,6 +102,7 @@ SRC_NAME			=	cmd.c					\
 						env_var.c				\
 						rpl_bs.c				\
 						rpl_bs2.c				\
+						rpl_bs3.c				\
 						frees.c					\
 						from_file.c				\
 						ft_cd.c					\

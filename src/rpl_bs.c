@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 12:39:05 by user42            #+#    #+#             */
-/*   Updated: 2021/04/06 17:16:01 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/11 12:19:48 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void	recu_bs(char *line, char *nl, int *i)
 		j++;
 	}
 	bs = which_bs((line)[*i + 1], "'\"\\$");
-	printf("%i\n", bs);
 	if (bs)
 	{
 		nl[j] = bs;
@@ -94,6 +93,7 @@ void	rpl_bs_ligne(char **line)
 	int		i;
 	char	*nl;
 
+	printf("LLINE %s\n", *line);
 	i = find_bs(*line);
 	nl = malloc(ft_strlen(*line) + 1);
 	if (i != -1)
@@ -102,5 +102,4 @@ void	rpl_bs_ligne(char **line)
 		fill_rst(*line, nl);
 	free(*line);
 	*line = nl;
-	printf("POST RECU %s\n", *line);
 }

@@ -6,11 +6,38 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 14:43:28 by user42            #+#    #+#             */
-/*   Updated: 2021/04/06 17:33:12 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/11 13:27:15 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+int	find_semicolon(char *line)
+{
+	int	i;
+	int	inqu;
+	int	indqu;
+
+	i = 0;
+	inqu = 0;
+	indqu = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'' && !(indqu % 2) && (i == 0 || line[i - 1] != '\\'
+				|| (i != 1 && line[i - 2] == '\\')))
+			inqu += 1;
+		if (line[i] == '\"' && !(inqu % 2) && (i == 0 || line[i - 1] != '\\'
+				|| (i != 1 && line[i - 2] == '\\')))
+			indqu += 1;
+		if (line[i] == ';' && !(inqu % 2) && !(indqu % 2) && (i == 0
+				|| line[i - 1] != '\\' || (i != 1 && line[i - 2] == '\\')))
+		{
+			return (i);
+		}
+		i++;
+	}
+	return (-1);
+}
 
 void	rpl_bs_inl(char *line)
 {
@@ -27,6 +54,8 @@ void	rpl_bs_inl(char *line)
 			line[i] = '\\';
 		else if (line[i] == 4)
 			line[i] = '$';
+		else if (line[i] == 5)
+			line[i] = ';';
 		i++;
 	}
 }
@@ -62,7 +91,8 @@ int	rpl_bs_dquote(char *line, char *nl, int *j, int *k)
 	{
 		if (line[i] == '\'' && !(indqu % 2))
 			inqu += 1;
-		if (line[i] == '\"' && !(inqu % 2) && (i == 0 || line[i - 1] != '\\'))
+		if (line[i] == '\"' && !(inqu % 2) && (i == 0 || line[i - 1] != '\\'
+				|| (i != 1 && line[i - 2] == '\\')))
 			indqu += 1;
 		if (line[i] == '\\' && !(inqu % 2))
 		{
@@ -70,10 +100,11 @@ int	rpl_bs_dquote(char *line, char *nl, int *j, int *k)
 			if (indqu % 2 && nl)
 				rpl_bs_dquote2(line, nl, i, k);
 			else if (nl)
-				nl[*k] = line[i + 1];
+				nl[*k] = rpl_semicolon(line[i + 1]);
 			return (42 / (1 + !(indqu % 2)));
 		}
 		i++;
 	}
+	reset_bs_dquote(nl, &inqu, &indqu);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:46:37 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:07:53 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/11 12:27:17 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,14 +127,16 @@ void	var_env_ligne(char **line, char ***envp)
 	char	*l2;
 	char	*l3;
 
-	stp = ft_charat(*line, ';');
+	stp = find_semicolon(*line);
 	if (stp != -1)
 	{
-		l2 = ft_strdnup(*line, ';');
+		printf("FOUD\n");
+		l2 = ft_substr(*line, 0, stp);
 		l3 = ft_strdnup(*line + stp, 99999);
 	}
 	else
 	{
+		printf("ELSE\n");
 		l2 = ft_strdup(*line);
 		l3 = malloc(1);
 		l3[0] = 0;
