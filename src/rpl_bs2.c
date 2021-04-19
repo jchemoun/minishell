@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 14:43:28 by user42            #+#    #+#             */
-/*   Updated: 2021/04/11 13:27:15 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/19 10:31:37 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	rpl_bs_inl(char *line)
 			line[i] = '$';
 		else if (line[i] == 5)
 			line[i] = ';';
+		else if (line[i] == 6)
+			line[i] = '|';
 		i++;
 	}
 }

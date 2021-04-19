@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:53:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/03 13:46:31 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/19 10:37:34 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ int	check_err(t_cmds cmds)
 	if (cmds.sep > 1 && (cmds.rst == 0 || cmds.rst[0] == 0))
 	{
 		ft_werror_token(cmds, cmds.rst[i], 258);
+		return (1);
+	}
+	if (cmds.cmd[0] == 0 && cmds.sep == 2)
+	{
+		ft_werror_token(cmds, '|', 2);
 		return (1);
 	}
 	while (cmds.sep > 0 && cmds.rst[i] == ' ')

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:58:28 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/05 12:34:29 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/19 10:45:37 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*isinpath(t_cmds cmds, char **envp, int *j)
 	return (0);
 }
 
-int	isindir(t_cmds cmds, int *j)
+int	isindir(t_cmds cmds, int *j, int *ret)
 {
 	int			i;
 	struct stat	buf;
@@ -101,6 +101,7 @@ int	isindir(t_cmds cmds, int *j)
 	if (stat(cmds.cmd, &buf) == -1)
 	{
 		*j = -1;
+		*ret = 127;
 		ft_werror("no such file or directory:", cmds, 127);
 		free_cmd(cmds);
 		return (0);
@@ -108,14 +109,12 @@ int	isindir(t_cmds cmds, int *j)
 	i = get_perm(buf, 0);
 	if (i == 1)
 		return (1);
+	*ret = 126;
+	*j = -1;
+	if (i == 0)
+		ft_werror("permission denied:", cmds, 126);
 	else
-	{
-		*j = -1;
-		if (i == 0)
-			ft_werror("permission denied:", cmds, 126);
-		else
-			ft_werror("is a directory", cmds, 126);
-		free_cmd(cmds);
-	}
+		ft_werror("is a directory", cmds, 126);
+	free_cmd(cmds);
 	return (0);
 }

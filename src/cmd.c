@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 10:52:16 by jchemoun          #+#    #+#             */
-/*   Updated: 2021/04/05 12:45:12 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/19 10:42:01 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	single_cmd(t_cmds cmds, char ***envp)
 		cp = isinpath(cmds, *envp, &i);
 	if (i != -1 && cp)
 		ret = simple_exec(cmds, *envp, cp);
-	else if (i != -1 && cp == 0 && isindir(cmds, &i))
+	else if (i != -1 && cp == 0 && isindir(cmds, &i, &ret))
 		ret = simple_exec(cmds, *envp, cmds.cmd);
 	else if (i != -1)
 		ret = cmd_not_f(cmds);

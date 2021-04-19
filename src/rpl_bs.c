@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/02 12:39:05 by user42            #+#    #+#             */
-/*   Updated: 2021/04/11 12:19:48 by jchemoun         ###   ########.fr       */
+/*   Updated: 2021/04/19 10:24:19 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void	rpl_bs_ligne(char **line)
 	int		i;
 	char	*nl;
 
-	printf("LLINE %s\n", *line);
 	i = find_bs(*line);
 	nl = malloc(ft_strlen(*line) + 1);
 	if (i != -1)
